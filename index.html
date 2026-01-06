@@ -1,81 +1,220 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Auditoria Pública – Sorteio BTC</title>
-<style>
-body {
-font-family: Arial, Helvetica, sans-serif;
-background: #0f1220;
-color: #eaeaf0;
-margin: 0;
-padding: 0;
+  <meta charset="UTF-8" />
+  <title>Auditoria Pública – Sorteio BTC</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f1220;
+      color: #eaeaf0;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(135deg, #1f2bff, #00c2ff);
+      padding: 30px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+    header p {
+      margin-top: 8px;
+      font-size: 14px;
+      opacity: 0.9;
+      word-break: break-all;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: #161a2f;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+      border-bottom: 1px solid #2a2f55;
+      padding-bottom: 8px;
+    }
+    ul {
+      padding-left: 18px;
+    }
+    li {
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+    .highlight {
+      color: #00e0ff;
+      font-weight: bold;
+    }
+    .progress {
+      background: #0c0f1f;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 20px;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      background: linear-gradient(90deg, #00c2ff, #1f2bff);
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+    code {
+      background: #0c0f1f;
+      padding: 4px 6px;
+      border-radius: 6px;
+      display: inline-block;
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Auditoria Pública – Sorteio Transparente em Bitcoin</h1>
+  <p>Carteira monitorada: <strong>bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca</strong></p>
+</header>
+
+<div class="container">
+
+  <div class="card" id="winners">
+    <h2>Últimos Ganhadores (últimos 5 payouts)</h2>
+    <ul id="winnerList">
+      <li>Carregando dados do explorador...</li>
+    </ul>
+  </div>
+
+  <div class="card" id="participants">
+    <h2>Rodada Atual</h2>
+    <p>Entradas recebidas com valor exato: <span class="highlight" id="entryCount">0</span> / 200</p>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <p style="margin-top:10px">Faltam <span class="highlight" id="missing">200</span> entradas para fechar o ciclo.</p>
+  </div>
+
+  <div class="card">
+    <h2>Guia rápido de auditoria (qualquer usuário)</h2>
+
+    <p>Este sorteio é <strong>100% auditável</strong> usando apenas um explorador de blocos. Nenhuma confiança no operador é necessária.</p>
+
+    <h3>📌 Dados públicos necessários</h3>
+    <ul>
+      <li>Endereço monitorado</li>
+      <li>Valor fixo por entrada: <code>0.00014000 BTC</code></li>
+      <li>Entradas por ciclo: <code>200</code></li>
+      <li>Hash do bloco de fechamento do ciclo (<code>seed_blockhash</code>)</li>
+      <li>Lista de txids das entradas do ciclo (ordenadas)</li>
+      <li>Fingerprint declarado pelo operador</li>
+    </ul>
+
+    <h3>1️⃣ Reunir as entradas</h3>
+    <ul>
+      <li>Liste todas as transações recebidas no endereço com o valor exato.</li>
+      <li>Separe o lote do ciclo atual (200 entradas).</li>
+      <li>Ordene por <code>blockheight → txid → vout</code>.</li>
+      <li>Confirme que existem exatamente 200 entradas.</li>
+    </ul>
+
+    <h3>2️⃣ Recalcular seed e fingerprint</h3>
+    <p>
+      <code>seed_material = seed_blockhash + "|" + txids_ordenados</code>
+    </p>
+    <p>
+      <code>fingerprint = sha256(seed_material)</code>
+    </p>
+    <p>O fingerprint calculado deve ser <strong>idêntico</strong> ao divulgado pelo operador.</p>
+
+    <h3>3️⃣ Determinar o vencedor</h3>
+    <p>
+      <code>winner_idx = int(sha256(seed_material), 16) % 200</code>
+    </p>
+    <p>O txid na posição <code>winner_idx</code> da lista ordenada é o vencedor do ciclo.</p>
+
+    <h3>4️⃣ Validar o pagamento</h3>
+    <ul>
+      <li>Abra o txid de payout divulgado.</li>
+      <li>Confirme saída para o endereço vencedor.</li>
+      <li>Valor = <code>0.00014000 BTC × cotas pagas</code>.</li>
+    </ul>
+
+    <h3>🔍 Por que isso é justo?</h3>
+    <ul>
+      <li>Todas as entradas são públicas e on-chain.</li>
+      <li>A ordem é determinística.</li>
+      <li>O seed usa um blockhash fora do controle do operador.</li>
+      <li>SHA-256 elimina qualquer escolha manual.</li>
+      <li>O pagamento é verificável no blockchain.</li>
+    </ul>
+
+    <p><strong>Se algo não bater:</strong> qualquer pessoa pode refazer todos os cálculos de forma independente.</p>
+  </div>
+
+</div>
+
+<footer>
+  Auditoria descentralizada • Transparência total • Bitcoin
+</footer>
+
+<script>
+const ADDRESS = 'bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca';
+const EXACT_VALUE = 14000; // satoshis
+
+async function loadData() {
+  const res = await fetch(`https://mempool.space/api/address/${ADDRESS}/txs`);
+  const txs = await res.json();
+
+  // Últimos payouts (saídas)
+  const payouts = [];
+  txs.forEach(tx => {
+    tx.vout.forEach(v => {
+      if (v.scriptpubkey_address && v.scriptpubkey_address !== ADDRESS && v.value > EXACT_VALUE) {
+        payouts.push(v.scriptpubkey_address);
+      }
+    });
+  });
+
+  const winnerList = document.getElementById('winnerList');
+  winnerList.innerHTML = '';
+  payouts.slice(0,5).forEach(addr => {
+    const li = document.createElement('li');
+    li.textContent = addr;
+    winnerList.appendChild(li);
+  });
+
+  // Entradas exatas
+  let entries = 0;
+  txs.forEach(tx => {
+    tx.vout.forEach(v => {
+      if (v.scriptpubkey_address === ADDRESS && v.value === EXACT_VALUE) {
+        entries++;
+      }
+    });
+  });
+
+  const cycleEntries = entries % 200;
+  document.getElementById('entryCount').textContent = cycleEntries;
+  document.getElementById('missing').textContent = 200 - cycleEntries;
+  document.getElementById('progressBar').style.width = (cycleEntries / 200 * 100) + '%';
 }
-header {
-background: linear-gradient(135deg, #1f2bff, #00c2ff);
-padding: 30px 20px;
-text-align: center;
-}
-header h1 {
-margin: 0;
-font-size: 26px;
-}
-header p {
-margin-top: 8px;
-font-size: 14px;
-opacity: 0.9;
-word-break: break-all;
-}
-.container {
-max-width: 1100px;
-margin: 30px auto;
-padding: 0 20px;
-}
-.card {
-background: #161a2f;
-border-radius: 12px;
-padding: 20px;
-margin-bottom: 25px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-.card h2 {
-margin-top: 0;
-font-size: 20px;
-border-bottom: 1px solid #2a2f55;
-padding-bottom: 8px;
-}
-ul {
-padding-left: 18px;
-}
-li {
-margin-bottom: 6px;
-word-break: break-all;
-}
-.highlight {
-color: #00e0ff;
-font-weight: bold;
-}
-.progress {
-background: #0c0f1f;
-border-radius: 8px;
-overflow: hidden;
-height: 20px;
-margin-top: 10px;
-}
-.progress-bar {
-background: linear-gradient(90deg, #00c2ff, #1f2bff);
-height: 100%;
-width: 0%;
-transition: width 0.4s ease;
-}
-footer {
-text-align: center;
-padding: 20px;
-font-size: 12px;
-opacity: 0.7;
-}
-code {
-background: #0c0f1f;
-padding: 4px 6px;
-border-radius: 6px;
-display: inline-block;
+
+loadData();
+</script>
+
+</body>
+</html>
