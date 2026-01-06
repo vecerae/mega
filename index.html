@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -18,32 +18,106 @@
     }
     *{ box-sizing:border-box; }
     body{
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--ink);
       margin:0;
       padding:0;
     }
-    header{
-      background: linear-gradient(135deg, #1f2bff, #00c2ff);
-      padding: 28px 18px 20px;
-      text-align:center;
+    header.hero{
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #0b142b 0%, #0f243e 45%, #0a2a3d 100%);
+      padding: 32px 18px 26px;
+      border-bottom: 1px solid rgba(234,234,240,.12);
     }
-    header h1{
-      margin:0;
-      font-size: 26px;
-      letter-spacing: .2px;
+    header.hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(800px 220px at 20% -40%, rgba(255,255,255,.15), transparent 60%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 90px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 90px);
+      opacity: .55;
+      pointer-events:none;
     }
-    header p{
-      margin:10px 0 0;
-      font-size: 14px;
-      opacity: .95;
-      word-break: break-all;
-      display:flex;
-      gap:10px;
-      justify-content:center;
+    header.hero::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(500px 260px at 85% 120%, rgba(0,224,255,.20), transparent 60%);
+      opacity: .7;
+      pointer-events:none;
+    }
+    .header-shell{
+      max-width:1100px;
+      margin:0 auto;
+      position: relative;
+      z-index: 1;
+      padding: 0 6px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
       align-items:center;
-      flex-wrap:wrap;
+    }
+    .hero-copy{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .hero-title{
+      margin:0;
+      font-size: 30px;
+      letter-spacing: .2px;
+      line-height: 1.15;
+      text-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    .hero-sub{
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 520px;
+    }
+    .hero-panel{
+      background: rgba(12,15,31,.55);
+      border: 1px solid rgba(234,234,240,.18);
+      padding: 14px;
+      border-radius: 16px;
+      box-shadow: 0 16px 30px rgba(0,0,0,.30);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .hero-label{
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      opacity: .8;
+    }
+    .hero-address{
+      display:flex;
+      font-size: 11.5px;
+      align-items:center;
+      flex-wrap: wrap;
+      gap:10px;
+      background: rgba(8,12,24,.6);
+      border: 1px solid rgba(234,234,240,.2);
+      padding: 10px 12px;
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+      word-break: break-all;
+    }
+    .hero-address .btn{ box-shadow: none; }
+    @media (max-width: 700px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .hero-copy, .hero-panel{ align-items:center; text-align:center; }
+      .hero-title{ font-size: 24px; }
+      .hero-address{ justify-content:center; padding: 10px; }
     }
 
     .container{
@@ -108,9 +182,31 @@
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
+      align-items: start;
     }
+    .side-stack{
+      display:flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .stat{
+      background: rgba(12,15,31,.35);
+      border: 1px solid rgba(234,234,240,.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .stat .label{ font-size: 12px; color: var(--muted); }
+    .stat .value{ font-size: 20px; font-weight: 700; margin-top: 4px; }
+    .value-inline{ color: var(--ink); font-weight: 700; }
     @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
+      .side-stack{ gap: 14px; }
     }
 
     ul{ padding-left: 18px; }
@@ -125,6 +221,38 @@
       word-break: break-all;
     }
     .highlight{ color: var(--accent); font-weight:bold; }
+    .participate-list{
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: grid;
+      gap: 10px;
+    }
+    .participate-list li{
+      background: rgba(12,15,31,.35);
+      border: 1px solid rgba(234,234,240,.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 0;
+    }
+    .step{
+      display:flex;
+      flex-wrap: wrap;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .step-main{
+      display:flex;
+      flex-wrap: wrap;
+      align-items:center;
+      gap: 8px;
+    }
+    .step-actions{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
     .progress{
       background: var(--chip);
@@ -257,22 +385,33 @@
 </head>
 <body>
 
-<header>
-  <h1 data-i18n="title">Public Audit – Transparent Bitcoin Draw</h1>
-  <p>
-    <span data-i18n="monitoredWalletLabel">Monitored wallet:</span>
-    <strong class="mono" id="addrHeader"></strong>
-    <button class="btn small primary" id="copyAddrTop" type="button" title="Copy address">
-      📋 <span data-i18n="copy">Copy</span>
-    </button>
-  </p>
+<header class="hero">
+  <div class="header-shell">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1 class="hero-title" data-i18n="title">Public Audit – Transparent Bitcoin Draw</h1>
+        <div class="hero-sub" data-i18n="auditTip">
+          Tip: anyone can verify entries and payouts directly on the Bitcoin blockchain using a public explorer.
+        </div>
+      </div>
+      <div class="hero-panel">
+        <span class="hero-label" data-i18n="monitoredWalletLabel">Monitored wallet:</span>
+        <div class="hero-address">
+          <strong class="mono" id="addrHeader"></strong>
+          <button class="btn small primary" id="copyAddrTop" type="button" title="Copy address">
+            📋 <span data-i18n="copy">Copy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
 
 <div class="container">
 
   <div class="top-actions">
     <div class="pill">
-      <span class="muted" data-i18n="langLabel">Language</span>
+      <span class="muted" data-i18n="langLabel">Idioma</span>
       <select id="langSelect">
         <option value="en">🇺🇸 English</option>
         <option value="pt">🇧🇷 Português</option>
@@ -295,30 +434,39 @@
         <span class="badge ok" id="statusBadge">● Live</span>
       </h2>
 
-      <div class="sub">
-        <span data-i18n="exactEntriesLabel">Exact-value entries received:</span>
-        <span class="highlight" id="entryCount">0</span> / <span id="cycleTarget">200</span>
+      <div class="stats">
+        <div class="stat">
+          <div class="label" data-i18n="exactEntriesLabel">Exact-value entries received:</div>
+          <div class="value"><span id="entryCount">0</span> / <span id="cycleTarget">200</span></div>
+        </div>
       </div>
       <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-      <div class="sub" style="margin-top:8px">
-        <span data-i18n="missingLabel">Missing</span>
-        <span class="highlight" id="missing">200</span>
-        <span data-i18n="missingSuffix">entries to close the cycle.</span>
-      </div>
 
       <hr style="border:none;border-top:1px solid rgba(234,234,240,.08);margin:14px 0">
 
       <div class="sub"><strong data-i18n="participateTitle">How to participate</strong></div>
-      <ul>
+      <ul class="participate-list">
         <li>
-          <span data-i18n="sendExact">Send exactly</span>
-          <code class="mono" id="exactBtc"></code>
-          <button class="btn small" id="copyAmount" type="button">📋 <span data-i18n="copy">Copy</span></button>
+          <div class="step">
+            <div class="step-main">
+              <span data-i18n="sendExact">Send exactly</span>
+              <code class="mono" id="exactBtc"></code>
+            </div>
+            <div class="step-actions">
+              <button class="btn small" id="copyAmount" type="button">📋 <span data-i18n="copy">Copy</span></button>
+            </div>
+          </div>
         </li>
         <li>
-          <span data-i18n="toAddress">To this address:</span><br>
-          <code class="mono" id="addrCode"></code>
-          <button class="btn small primary" id="copyAddr" type="button">📋 <span data-i18n="copyAddress">Copy address</span></button>
+          <div class="step">
+            <div class="step-main">
+              <span data-i18n="toAddress">To this address:</span>
+              <code class="mono" id="addrCode"></code>
+            </div>
+            <div class="step-actions">
+              <button class="btn small primary" id="copyAddr" type="button">📋 <span data-i18n="copyAddress">Copy address</span></button>
+            </div>
+          </div>
         </li>
       </ul>
 
@@ -341,19 +489,33 @@
       </div>
     </div>
 
-    <div class="card" id="winners">
-      <h2>
-        <span data-i18n="lastWinnersTitle">Latest Winners</span>
-        <button class="btn small" id="exportPayouts" type="button">⬇️ <span data-i18n="exportJson">Export JSON</span></button>
-      </h2>
-      <ul id="winnerList">
-        <li data-i18n="loadingExplorer">Loading explorer data...</li>
-      </ul>
+    <div class="side-stack">
+      <div class="card" id="context">
+        <h2 data-i18n="transparencyTitle">Transparência em primeiro lugar</h2>
+        <div class="sub" data-i18n="transparencyDesc1">
+          Aqui você acompanha a rodada em tempo real, confere o progresso e valida o resultado
+          por conta própria, direto na blockchain. Sem intermediários, sem atalhos.
+        </div>
+        <div class="sub" data-i18n="transparencyDesc2">
+          Cada entrada é registrada on-chain, e o cálculo do vencedor é determinístico,
+          permitindo auditoria pública do início ao fim. Transparência não é promessa: é regra.
+        </div>
+      </div>
 
-      <div class="sub">
-        <strong data-i18n="prizeTitle">Prize</strong>:
-        <span class="highlight" id="prizeBtc"></span>
-        <span class="muted">(</span><span class="highlight" id="prizeEntries"></span><span class="muted" data-i18n="entriesWord"> entries</span><span class="muted">)</span>
+      <div class="card" id="trust">
+        <h2 data-i18n="trustTitle">Podemos confiar?</h2>
+        <div class="sub" data-i18n="trustDesc1">
+          Sim, porque não há governo, banco ou empresa controlando o resultado. O sistema funciona
+          fora das estruturas tradicionais, baseado em regras públicas e verificáveis por qualquer pessoa.
+        </div>
+        <div class="sub" data-i18n="trustDesc2">
+          A liberdade de operar sem censura traz vantagens reais: ninguém pode interferir nas entradas,
+          manipular o cálculo ou ocultar dados. Tudo fica registrado na blockchain, aberto para auditoria.
+        </div>
+        <div class="sub" data-i18n="trustDesc3">
+          Esse modelo evita promessas ilusórias e concentra a confiança no que é provável e verificável:
+          código aberto, dados públicos e resultado reproduzível.
+        </div>
       </div>
     </div>
 
@@ -451,13 +613,44 @@
     </div>
   </div>
 
+  <div class="card" id="winners">
+    <h2>
+      <span data-i18n="lastWinnersTitle">Latest Winners</span>
+      <button class="btn small" id="exportPayouts" type="button">⬇️ <span data-i18n="exportJson">Export JSON</span></button>
+    </h2>
+    <ul id="winnerList">
+      <li data-i18n="loadingExplorer">Loading explorer data...</li>
+    </ul>
+
+    <div class="sub">
+      <strong data-i18n="prizeTitle">Prize</strong>:
+      <span class="highlight" id="prizeBtc"></span>
+      <span class="muted">(</span><span class="highlight" id="prizeEntries"></span><span class="muted" data-i18n="entriesWord"> entries</span><span class="muted">)</span>
+    </div>
+
+    <div class="callout" style="margin-top:14px">
+      <strong data-i18n="whoTitle">Quem somos?</strong><br>
+      <span data-i18n="whoBody">
+        Somos uma equipe que cansou de promessas vazias. Criamos uma estrutura independente,
+        segura e transparente, que não depende de governo, banco ou “caixa preta”.
+        Diferente de loterias tradicionais (como a Mega-Sena), aqui você não precisa confiar
+        em uma instituição: tudo é verificável na blockchain, com regras públicas, cálculo
+        determinístico e dados abertos.
+        O resultado não é opinião, é matemática. Cada entrada e cada payout ficam registrados
+        e qualquer pessoa consegue auditar. Isso é liberdade real: um sorteio justo, global,
+        sem censura e sem manipulação. Esse projeto existe para provar que é possível fazer
+        do jeito certo — e melhor.
+      </span>
+    </div>
+  </div>
+
 </div>
 
 <footer>
   <span data-i18n="footerText">Decentralized audit • Total transparency • Bitcoin</span>
 </footer>
 
-<div class="toast" id="toast">Copied!</div>
+<div class="toast" id="toast" data-i18n="copiedToast">Copied!</div>
 
 <script>
 /** =========================
@@ -493,7 +686,7 @@ const i18n = {
     participateTitle: "How to participate",
     sendExact: "Send exactly",
     toAddress: "To this address:",
-    participationConfirm: "✅ Done! You are participating as soon as your transaction appears in the explorer as a valid entry: an output of the exact amount to the monitored address.",
+    participationConfirm: "✅ Done! Send the exact amount and you are already eligible for the current prize.",
     openExplorer: "Open in explorer",
     refresh: "Refresh",
     auditTip: "Tip: anyone can verify entries and payouts directly on the Bitcoin blockchain using a public explorer.",
@@ -529,7 +722,19 @@ const i18n = {
     thActions: "Actions",
     loadingEntries: "Loading entries...",
     auditNote: "Note: “From” is inferred from vin[0] (explorer API) and may not represent the participant’s receiving address.",
-    footerText: "Decentralized audit • Total transparency • Bitcoin"
+    footerText: "Decentralized audit • Total transparency • Bitcoin",
+    transparencyTitle: "Transparency first",
+    transparencyDesc1: "Here you can track the round in real time, check progress, and verify the result yourself, directly on the blockchain. No middlemen, no shortcuts.",
+    transparencyDesc2: "Each entry is recorded on-chain, and the winner calculation is deterministic, enabling public audit from start to finish. Transparency is not a promise: it is the rule.",
+    trustTitle: "Can we trust it?",
+    trustDesc1: "Yes, because no government, bank, or company controls the result. The system operates outside traditional structures, based on public rules that anyone can verify.",
+    trustDesc2: "The freedom to operate without censorship brings real advantages: no one can interfere with entries, manipulate the calculation, or hide data. Everything is recorded on the blockchain, open for audit.",
+    trustDesc3: "This model avoids empty promises and focuses trust on what is provable: open code, public data, and a reproducible outcome.",
+    whoTitle: "Who are we?",
+    whoBody: "We are a team that got tired of empty promises. We built an independent, secure, and transparent structure that does not rely on government, banks, or a black box. Unlike traditional lotteries (like Powerball), here you do not need to trust an institution: everything is verifiable on the blockchain, with public rules, deterministic calculation, and open data. The result is not opinion, it is math. Every entry and every payout is recorded and anyone can audit. This is real freedom: a fair, global draw, without censorship or manipulation. This project exists to prove it can be done the right way — and better.",
+    copiedToast: "Copied!",
+    noCompletedDraw: "No completed draw yet.",
+    seedUnavailable: "Seed blockhash unavailable."
   },
   pt: {
     title: "Auditoria Pública – Sorteio Transparente em Bitcoin",
@@ -544,7 +749,7 @@ const i18n = {
     participateTitle: "Como participar",
     sendExact: "Envie exatamente",
     toAddress: "Para este endereço:",
-    participationConfirm: "✅ Pronto! Você está participando assim que sua transação aparecer no explorador como entrada válida: uma saída com o valor exato para a carteira monitorada.",
+    participationConfirm: "✅ Pronto! Envie o valor exato e você já concorre ao prêmio atual.",
     openExplorer: "Abrir no explorador",
     refresh: "Atualizar",
     auditTip: "Dica: qualquer pessoa pode verificar entradas e payouts diretamente na blockchain usando um explorador público.",
@@ -580,13 +785,472 @@ const i18n = {
     thActions: "Ações",
     loadingEntries: "Carregando entradas...",
     auditNote: "Nota: “Origem” é inferido do vin[0] (API do explorador) e pode não representar o endereço final do participante.",
-    footerText: "Auditoria descentralizada • Transparência total • Bitcoin"
+    footerText: "Auditoria descentralizada • Transparência total • Bitcoin",
+    transparencyTitle: "Transparência em primeiro lugar",
+    transparencyDesc1: "Aqui você acompanha a rodada em tempo real, confere o progresso e valida o resultado por conta própria, direto na blockchain. Sem intermediários, sem atalhos.",
+    transparencyDesc2: "Cada entrada é registrada on-chain, e o cálculo do vencedor é determinístico, permitindo auditoria pública do início ao fim. Transparência não é promessa: é regra.",
+    trustTitle: "Podemos confiar?",
+    trustDesc1: "Sim, porque não há governo, banco ou empresa controlando o resultado. O sistema funciona fora das estruturas tradicionais, baseado em regras públicas e verificáveis por qualquer pessoa.",
+    trustDesc2: "A liberdade de operar sem censura traz vantagens reais: ninguém pode interferir nas entradas, manipular o cálculo ou ocultar dados. Tudo fica registrado na blockchain, aberto para auditoria.",
+    trustDesc3: "Esse modelo evita promessas ilusórias e concentra a confiança no que é provável e verificável: código aberto, dados públicos e resultado reproduzível.",
+    whoTitle: "Quem somos?",
+    whoBody: "Somos uma equipe que cansou de promessas vazias. Criamos uma estrutura independente, segura e transparente, que não depende de governo, banco ou “caixa preta”. Diferente de loterias tradicionais (como a Mega-Sena), aqui você não precisa confiar em uma instituição: tudo é verificável na blockchain, com regras públicas, cálculo determinístico e dados abertos. O resultado não é opinião, é matemática. Cada entrada e cada payout ficam registrados e qualquer pessoa consegue auditar. Isso é liberdade real: um sorteio justo, global, sem censura e sem manipulação. Esse projeto existe para provar que é possível fazer do jeito certo — e melhor.",
+    copiedToast: "Copiado!",
+    noCompletedDraw: "Ainda não há sorteio completo.",
+    seedUnavailable: "Seed blockhash indisponível."
+  },
+  es: {
+    title: "Auditoría Pública – Sorteo Transparente de Bitcoin",
+    monitoredWalletLabel: "Cartera monitoreada:",
+    langLabel: "Idioma",
+    copy: "Copiar",
+    copyAddress: "Copiar dirección",
+    currentRoundTitle: "Ronda actual",
+    exactEntriesLabel: "Entradas con valor exacto recibidas:",
+    missingLabel: "Faltan",
+    missingSuffix: "entradas para cerrar el ciclo.",
+    participateTitle: "Cómo participar",
+    sendExact: "Envía exactamente",
+    toAddress: "A esta dirección:",
+    participationConfirm: "✅ ¡Listo! Envía el monto exacto y ya estás participando por el premio actual.",
+    openExplorer: "Abrir en el explorador",
+    refresh: "Actualizar",
+    auditTip: "Consejo: cualquiera puede verificar entradas y pagos directamente en la blockchain de Bitcoin usando un explorador público.",
+    lastWinnersTitle: "Últimos ganadores",
+    loadingExplorer: "Cargando datos del explorador...",
+    exportJson: "Exportar JSON",
+    prizeTitle: "Premio",
+    entriesWord: " entradas",
+    auditTitle: "Caja de Auditoría – Último Sorteo Cerrado",
+    auditIntro: "Esta sección audita el ÚLTIMO ciclo COMPLETO (sorteo cerrado). Muestra la lista ordenada de entradas, el seed blockhash y el cálculo determinista del ganador. Cualquiera puede reproducir el mismo resultado.",
+    exportCycle: "Exportar",
+    recalc: "Recalcular",
+    auditStepsTitle: "Cómo validar (pasos rápidos)",
+    step1: "Abre la dirección monitoreada en un explorador público y confirma que las entradas existen on-chain.",
+    step2: "Confirma el orden: altura de bloque → txid → índice de salida (vout) coincide con la tabla.",
+    step3: "Seed = blockhash de la ÚLTIMA entrada del ciclo completo.",
+    step4: "Concatena todos los txids del ciclo + seed blockhash y aplica SHA-256.",
+    step5: "Índice ganador = hash como entero grande mod TARGET_ENTRIES.",
+    auditDataTitle: "Datos de auditoría (último sorteo cerrado)",
+    cycleId: "ID del ciclo",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "Índice ganador",
+    winnerEntry: "Txid de la entrada ganadora",
+    openWinnerTx: "Abrir tx ganadora",
+    copyVerify: "Copiar cadena de verificación",
+    verifyStringInfo: "“Cadena de verificación” = txid1|txid2|...|txidN|seed_blockhash (puedes hacer hash con SHA-256 en cualquier lugar).",
+    entryListTitle: "Lista ordenada de entradas (último sorteo cerrado)",
+    entryListHint: "Solo cuentan los pagos exactos a la cartera monitoreada. Los montos incorrectos se ignoran.",
+    thTxid: "Txid",
+    thBlock: "Bloque",
+    thFrom: "Origen (mejor esfuerzo)",
+    thAmount: "Monto",
+    thActions: "Acciones",
+    loadingEntries: "Cargando entradas...",
+    auditNote: "Nota: “Origen” se infiere de vin[0] (API del explorador) y puede no representar la dirección final del participante.",
+    footerText: "Auditoría descentralizada • Transparencia total • Bitcoin",
+    transparencyTitle: "Transparencia ante todo",
+    transparencyDesc1: "Aquí puedes seguir la ronda en tiempo real, verificar el progreso y validar el resultado por tu cuenta, directamente en la blockchain. Sin intermediarios, sin atajos.",
+    transparencyDesc2: "Cada entrada se registra on-chain, y el cálculo del ganador es determinista, permitiendo auditoría pública de principio a fin. La transparencia no es una promesa: es la regla.",
+    trustTitle: "¿Podemos confiar?",
+    trustDesc1: "Sí, porque no hay gobierno, banco o empresa controlando el resultado. El sistema funciona fuera de las estructuras tradicionales, basado en reglas públicas que cualquiera puede verificar.",
+    trustDesc2: "La libertad de operar sin censura trae ventajas reales: nadie puede interferir con las entradas, manipular el cálculo ni ocultar datos. Todo queda registrado en la blockchain, abierto a auditoría.",
+    trustDesc3: "Este modelo evita promesas vacías y centra la confianza en lo que es comprobable: código abierto, datos públicos y un resultado reproducible.",
+    whoTitle: "¿Quiénes somos?",
+    whoBody: "Somos un equipo que se cansó de promesas vacías. Creamos una estructura independiente, segura y transparente, que no depende de gobierno, bancos ni “caja negra”. A diferencia de las loterías tradicionales (como La Primitiva), aquí no necesitas confiar en una institución: todo es verificable en la blockchain, con reglas públicas, cálculo determinista y datos abiertos. El resultado no es opinión, es matemática. Cada entrada y cada pago quedan registrados y cualquiera puede auditar. Esto es libertad real: un sorteo justo, global, sin censura ni manipulación. Este proyecto existe para demostrar que se puede hacer de la forma correcta — y mejor.",
+    copiedToast: "¡Copiado!",
+    noCompletedDraw: "Aún no hay sorteo completado.",
+    seedUnavailable: "Seed blockhash no disponible."
+  },
+  fr: {
+    title: "Audit Public – Tirage Bitcoin Transparent",
+    monitoredWalletLabel: "Portefeuille surveillé :",
+    langLabel: "Langue",
+    copy: "Copier",
+    copyAddress: "Copier l’adresse",
+    currentRoundTitle: "Tour actuel",
+    exactEntriesLabel: "Entrées au montant exact reçues :",
+    missingLabel: "Il manque",
+    missingSuffix: "entrées pour clôturer le cycle.",
+    participateTitle: "Comment participer",
+    sendExact: "Envoyez exactement",
+    toAddress: "À cette adresse :",
+    participationConfirm: "✅ C’est bon ! Envoyez le montant exact et vous participez déjà au prix actuel.",
+    openExplorer: "Ouvrir dans l’explorateur",
+    refresh: "Actualiser",
+    auditTip: "Astuce : n’importe qui peut vérifier les entrées et les paiements directement sur la blockchain Bitcoin via un explorateur public.",
+    lastWinnersTitle: "Derniers gagnants",
+    loadingExplorer: "Chargement des données de l’explorateur…",
+    exportJson: "Exporter JSON",
+    prizeTitle: "Prix",
+    entriesWord: " entrées",
+    auditTitle: "Boîte d’audit – Dernier tirage clôturé",
+    auditIntro: "Cette section audite le DERNIER cycle TERMINÉ (tirage clôturé). Elle montre la liste ordonnée des entrées, le seed blockhash et le calcul déterministe du gagnant. Tout le monde peut reproduire le même résultat.",
+    exportCycle: "Exporter",
+    recalc: "Recalculer",
+    auditStepsTitle: "Comment valider (étapes rapides)",
+    step1: "Ouvrez l’adresse surveillée dans un explorateur public et confirmez que les entrées existent on-chain.",
+    step2: "Confirmez l’ordre : hauteur de bloc → txid → index de sortie (vout) correspond au tableau.",
+    step3: "Seed = blockhash de la DERNIÈRE entrée du cycle terminé.",
+    step4: "Concaténez tous les txids du cycle + seed blockhash, puis appliquez SHA-256.",
+    step5: "Index gagnant = hash comme grand entier mod TARGET_ENTRIES.",
+    auditDataTitle: "Données d’audit (dernier tirage clôturé)",
+    cycleId: "ID du cycle",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "Index gagnant",
+    winnerEntry: "Txid de l’entrée gagnante",
+    openWinnerTx: "Ouvrir la tx gagnante",
+    copyVerify: "Copier la chaîne de vérification",
+    verifyStringInfo: "« Chaîne de vérification » = txid1|txid2|...|txidN|seed_blockhash (hashable en SHA-256 n’importe où).",
+    entryListTitle: "Liste ordonnée des entrées (dernier tirage clôturé)",
+    entryListHint: "Seuls les paiements exacts vers le portefeuille surveillé comptent. Les montants incorrects sont ignorés.",
+    thTxid: "Txid",
+    thBlock: "Bloc",
+    thFrom: "Origine (approx.)",
+    thAmount: "Montant",
+    thActions: "Actions",
+    loadingEntries: "Chargement des entrées…",
+    auditNote: "Note : « Origine » est déduit de vin[0] (API de l’explorateur) et peut ne pas représenter l’adresse finale du participant.",
+    footerText: "Audit décentralisé • Transparence totale • Bitcoin",
+    transparencyTitle: "Transparence avant tout",
+    transparencyDesc1: "Ici, vous suivez le tour en temps réel, vérifiez la progression et validez le résultat vous-même, directement sur la blockchain. Sans intermédiaires, sans raccourcis.",
+    transparencyDesc2: "Chaque entrée est enregistrée on-chain, et le calcul du gagnant est déterministe, permettant un audit public du début à la fin. La transparence n’est pas une promesse : c’est la règle.",
+    trustTitle: "Peut-on faire confiance ?",
+    trustDesc1: "Oui, car aucun gouvernement, banque ou entreprise ne contrôle le résultat. Le système fonctionne en dehors des structures traditionnelles, sur des règles publiques vérifiables par tous.",
+    trustDesc2: "La liberté d’opérer sans censure apporte de vrais avantages : personne ne peut interférer avec les entrées, manipuler le calcul ou cacher des données. Tout est inscrit sur la blockchain, ouvert à l’audit.",
+    trustDesc3: "Ce modèle évite les promesses creuses et place la confiance dans ce qui est prouvable : code ouvert, données publiques et résultat reproductible.",
+    whoTitle: "Qui sommes-nous ?",
+    whoBody: "Nous sommes une équipe lassée des promesses creuses. Nous avons créé une structure indépendante, sûre et transparente, qui ne dépend d’aucun gouvernement, banque ou « boîte noire ». Contrairement aux loteries traditionnelles (comme l’EuroMillions), ici vous n’avez pas besoin de faire confiance à une institution : tout est vérifiable sur la blockchain, avec des règles publiques, un calcul déterministe et des données ouvertes. Le résultat n’est pas une opinion, c’est des mathématiques. Chaque entrée et chaque paiement sont enregistrés et chacun peut auditer. C’est une vraie liberté : un tirage juste, mondial, sans censure ni manipulation. Ce projet existe pour prouver qu’on peut faire mieux — et correctement.",
+    copiedToast: "Copié !",
+    noCompletedDraw: "Aucun tirage terminé pour le moment.",
+    seedUnavailable: "Seed blockhash indisponible."
+  },
+  it: {
+    title: "Audit Pubblico – Estrazione Bitcoin Trasparente",
+    monitoredWalletLabel: "Wallet monitorato:",
+    langLabel: "Lingua",
+    copy: "Copia",
+    copyAddress: "Copia indirizzo",
+    currentRoundTitle: "Round corrente",
+    exactEntriesLabel: "Partecipazioni con valore esatto ricevute:",
+    missingLabel: "Mancano",
+    missingSuffix: "partecipazioni per chiudere il ciclo.",
+    participateTitle: "Come partecipare",
+    sendExact: "Invia esattamente",
+    toAddress: "A questo indirizzo:",
+    participationConfirm: "✅ Fatto! Invia l’importo esatto e partecipi già al premio attuale.",
+    openExplorer: "Apri nell’explorer",
+    refresh: "Aggiorna",
+    auditTip: "Suggerimento: chiunque può verificare ingressi e pagamenti direttamente sulla blockchain di Bitcoin usando un explorer pubblico.",
+    lastWinnersTitle: "Ultimi vincitori",
+    loadingExplorer: "Caricamento dati explorer...",
+    exportJson: "Esporta JSON",
+    prizeTitle: "Premio",
+    entriesWord: " partecipazioni",
+    auditTitle: "Box di Audit – Ultima Estrazione Chiusa",
+    auditIntro: "Questa sezione verifica l’ULTIMO ciclo COMPLETATO (estrazione chiusa). Mostra l’elenco ordinato delle partecipazioni, il seed blockhash e il calcolo deterministico del vincitore. Chiunque può riprodurre lo stesso risultato.",
+    exportCycle: "Esporta",
+    recalc: "Ricalcola",
+    auditStepsTitle: "Come validare (passi rapidi)",
+    step1: "Apri il wallet monitorato in un explorer pubblico e conferma che le partecipazioni esistono on-chain.",
+    step2: "Conferma l’ordine: altezza blocco → txid → indice di output (vout) coincide con la tabella.",
+    step3: "Seed = blockhash dell’ULTIMA partecipazione del ciclo completato.",
+    step4: "Concatena tutti i txid del ciclo + seed blockhash, poi applica SHA-256.",
+    step5: "Indice vincente = hash come intero grande mod TARGET_ENTRIES.",
+    auditDataTitle: "Dati di audit (ultima estrazione chiusa)",
+    cycleId: "ID ciclo",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "Indice vincente",
+    winnerEntry: "Txid della partecipazione vincente",
+    openWinnerTx: "Apri tx vincente",
+    copyVerify: "Copia stringa di verifica",
+    verifyStringInfo: "“Stringa di verifica” = txid1|txid2|...|txidN|seed_blockhash (hash con SHA-256 ovunque).",
+    entryListTitle: "Elenco ordinato delle partecipazioni (ultima estrazione chiusa)",
+    entryListHint: "Contano solo i pagamenti esatti al wallet monitorato. Gli importi errati sono ignorati.",
+    thTxid: "Txid",
+    thBlock: "Blocco",
+    thFrom: "Origine (stima)",
+    thAmount: "Importo",
+    thActions: "Azioni",
+    loadingEntries: "Caricamento partecipazioni...",
+    auditNote: "Nota: “Origine” è dedotta da vin[0] (API dell’explorer) e potrebbe non rappresentare l’indirizzo finale del partecipante.",
+    footerText: "Audit decentralizzato • Trasparenza totale • Bitcoin",
+    transparencyTitle: "Trasparenza prima di tutto",
+    transparencyDesc1: "Qui puoi seguire il round in tempo reale, verificare i progressi e validare il risultato da solo, direttamente sulla blockchain. Senza intermediari, senza scorciatoie.",
+    transparencyDesc2: "Ogni partecipazione è registrata on-chain e il calcolo del vincitore è deterministico, consentendo un audit pubblico dall’inizio alla fine. La trasparenza non è una promessa: è la regola.",
+    trustTitle: "Possiamo fidarci?",
+    trustDesc1: "Sì, perché nessun governo, banca o azienda controlla il risultato. Il sistema opera fuori dalle strutture tradizionali, basato su regole pubbliche verificabili da chiunque.",
+    trustDesc2: "La libertà di operare senza censura porta vantaggi reali: nessuno può interferire con le partecipazioni, manipolare il calcolo o nascondere dati. Tutto è registrato sulla blockchain, aperto all’audit.",
+    trustDesc3: "Questo modello evita promesse vuote e concentra la fiducia su ciò che è dimostrabile: codice aperto, dati pubblici e risultato riproducibile.",
+    whoTitle: "Chi siamo?",
+    whoBody: "Siamo un team stanco delle promesse vuote. Abbiamo creato una struttura indipendente, sicura e trasparente, che non dipende da governi, banche o “scatole nere”. A differenza delle lotterie tradizionali (come il SuperEnalotto), qui non devi fidarti di un’istituzione: tutto è verificabile sulla blockchain, con regole pubbliche, calcolo deterministico e dati aperti. Il risultato non è un’opinione, è matematica. Ogni partecipazione e ogni pagamento sono registrati e chiunque può verificare. Questa è libertà reale: un’estrazione equa, globale, senza censura né manipolazioni. Questo progetto esiste per dimostrare che si può fare nel modo giusto — e meglio.",
+    copiedToast: "Copiato!",
+    noCompletedDraw: "Nessun sorteggio completato per ora.",
+    seedUnavailable: "Seed blockhash non disponibile."
+  },
+  ru: {
+    title: "Публичный аудит — Прозрачный биткоин-розыгрыш",
+    monitoredWalletLabel: "Отслеживаемый кошелек:",
+    langLabel: "Язык",
+    copy: "Копировать",
+    copyAddress: "Копировать адрес",
+    currentRoundTitle: "Текущий раунд",
+    exactEntriesLabel: "Поступившие точные суммы:",
+    missingLabel: "Не хватает",
+    missingSuffix: "входов для закрытия цикла.",
+    participateTitle: "Как участвовать",
+    sendExact: "Отправьте ровно",
+    toAddress: "На этот адрес:",
+    participationConfirm: "✅ Готово! Отправьте точную сумму, и вы уже участвуете в розыгрыше текущего приза.",
+    openExplorer: "Открыть в обозревателе",
+    refresh: "Обновить",
+    auditTip: "Совет: любой может проверить входы и выплаты напрямую в блокчейне Bitcoin через публичный обозреватель.",
+    lastWinnersTitle: "Последние победители",
+    loadingExplorer: "Загрузка данных обозревателя...",
+    exportJson: "Экспорт JSON",
+    prizeTitle: "Приз",
+    entriesWord: " входов",
+    auditTitle: "Аудит — Последний закрытый розыгрыш",
+    auditIntro: "Этот раздел проверяет ПОСЛЕДНИЙ ЗАВЕРШЕННЫЙ цикл (закрытый розыгрыш). Он показывает упорядоченный список входов, seed blockhash и детерминированный расчет победителя. Любой может воспроизвести тот же результат.",
+    exportCycle: "Экспорт",
+    recalc: "Пересчитать",
+    auditStepsTitle: "Как проверить (быстрые шаги)",
+    step1: "Откройте отслеживаемый адрес в публичном обозревателе и подтвердите, что входы существуют on-chain.",
+    step2: "Подтвердите порядок: высота блока → txid → индекс выхода (vout) соответствует таблице.",
+    step3: "Seed = blockhash ПОСЛЕДНЕГО входа завершенного цикла.",
+    step4: "Склейте все txid цикла + seed blockhash, затем примените SHA-256.",
+    step5: "Индекс победителя = хэш как большое целое mod TARGET_ENTRIES.",
+    auditDataTitle: "Данные аудита (последний закрытый розыгрыш)",
+    cycleId: "ID цикла",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "Индекс победителя",
+    winnerEntry: "Txid победного входа",
+    openWinnerTx: "Открыть победную tx",
+    copyVerify: "Копировать строку проверки",
+    verifyStringInfo: "«Строка проверки» = txid1|txid2|...|txidN|seed_blockhash (можно хэшировать SHA-256 где угодно).",
+    entryListTitle: "Упорядоченный список входов (последний закрытый розыгрыш)",
+    entryListHint: "Засчитываются только точные платежи на отслеживаемый адрес. Неверные суммы игнорируются.",
+    thTxid: "Txid",
+    thBlock: "Блок",
+    thFrom: "Откуда (примерно)",
+    thAmount: "Сумма",
+    thActions: "Действия",
+    loadingEntries: "Загрузка входов...",
+    auditNote: "Примечание: «Откуда» определяется по vin[0] (API обозревателя) и может не соответствовать конечному адресу участника.",
+    footerText: "Децентрализованный аудит • Полная прозрачность • Bitcoin",
+    transparencyTitle: "Прозрачность прежде всего",
+    transparencyDesc1: "Здесь вы отслеживаете раунд в реальном времени, проверяете прогресс и сами подтверждаете результат прямо в блокчейне. Без посредников и обходных путей.",
+    transparencyDesc2: "Каждый вход записывается on-chain, а расчет победителя детерминирован, что позволяет публичный аудит от начала до конца. Прозрачность — не обещание, а правило.",
+    trustTitle: "Можно ли доверять?",
+    trustDesc1: "Да, потому что ни государство, ни банк, ни компания не контролируют результат. Система работает вне традиционных структур, на основе публичных правил, которые может проверить любой.",
+    trustDesc2: "Свобода работы без цензуры дает реальные преимущества: никто не может вмешаться во входы, подменить расчет или скрыть данные. Все записано в блокчейне и открыто для аудита.",
+    trustDesc3: "Эта модель избегает пустых обещаний и опирается на доказуемое: открытый код, публичные данные и воспроизводимый результат.",
+    whoTitle: "Кто мы?",
+    whoBody: "Мы команда, уставшая от пустых обещаний. Мы создали независимую, безопасную и прозрачную структуру, которая не зависит от государства, банков или «черного ящика». В отличие от традиционных лотерей (например, «Гослото»), здесь не нужно доверять институту: все проверяемо в блокчейне, с публичными правилами, детерминированным расчетом и открытыми данными. Результат — не мнение, а математика. Каждый вход и каждая выплата фиксируются, и любой может провести аудит. Это настоящая свобода: честный, глобальный розыгрыш, без цензуры и манипуляций. Этот проект существует, чтобы доказать, что можно делать правильно — и лучше.",
+    copiedToast: "Скопировано!",
+    noCompletedDraw: "Завершенного розыгрыша пока нет.",
+    seedUnavailable: "Seed blockhash недоступен."
+  },
+  zh: {
+    title: "公开审计 — 透明比特币抽奖",
+    monitoredWalletLabel: "监控钱包：",
+    langLabel: "语言",
+    copy: "复制",
+    copyAddress: "复制地址",
+    currentRoundTitle: "当前轮次",
+    exactEntriesLabel: "收到的精确金额参与数：",
+    missingLabel: "还差",
+    missingSuffix: "个参与即可结束本轮。",
+    participateTitle: "如何参与",
+    sendExact: "请准确发送",
+    toAddress: "到此地址：",
+    participationConfirm: "✅ 完成！发送准确金额即可参与当前奖金抽奖。",
+    openExplorer: "在浏览器中打开",
+    refresh: "刷新",
+    auditTip: "提示：任何人都可以通过公共浏览器直接在比特币区块链上验证参与和支付。",
+    lastWinnersTitle: "最新获奖者",
+    loadingExplorer: "正在加载浏览器数据…",
+    exportJson: "导出 JSON",
+    prizeTitle: "奖金",
+    entriesWord: " 个参与",
+    auditTitle: "审计工具箱 — 最近完成的抽奖",
+    auditIntro: "本部分审计最近完成的周期（已结束抽奖）。显示按顺序排列的参与列表、seed blockhash 和确定性的中奖计算。任何人都可以复现相同结果。",
+    exportCycle: "导出",
+    recalc: "重新计算",
+    auditStepsTitle: "如何验证（快速步骤）",
+    step1: "在公共浏览器中打开监控地址并确认参与记录已上链。",
+    step2: "确认顺序：区块高度 → txid → 输出索引（vout）与表格一致。",
+    step3: "Seed = 已完成周期中最后一笔参与的区块哈希。",
+    step4: "拼接所有周期 txid + seed blockhash，然后进行 SHA-256。",
+    step5: "中奖索引 = 哈希作为大整数 mod TARGET_ENTRIES。",
+    auditDataTitle: "审计数据（最近完成的抽奖）",
+    cycleId: "周期 ID",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "中奖索引",
+    winnerEntry: "中奖参与 txid",
+    openWinnerTx: "打开中奖交易",
+    copyVerify: "复制验证字符串",
+    verifyStringInfo: "“验证字符串” = txid1|txid2|...|txidN|seed_blockhash（可在任何地方使用 SHA-256 哈希）。",
+    entryListTitle: "参与列表（最近完成的抽奖）",
+    entryListHint: "只有发送到监控地址且金额精确的支付才计入。错误金额将被忽略。",
+    thTxid: "Txid",
+    thBlock: "区块",
+    thFrom: "来源（估算）",
+    thAmount: "金额",
+    thActions: "操作",
+    loadingEntries: "正在加载参与记录…",
+    auditNote: "注意：“来源”根据 vin[0]（浏览器 API）推断，可能不是参与者最终地址。",
+    footerText: "去中心化审计 • 完全透明 • Bitcoin",
+    transparencyTitle: "透明优先",
+    transparencyDesc1: "在这里你可以实时跟踪轮次、查看进度并亲自验证结果，直接在区块链上完成。无需中介，没有捷径。",
+    transparencyDesc2: "每一笔参与都会上链记录，中奖计算为确定性计算，可从头到尾公开审计。透明不是承诺，而是规则。",
+    trustTitle: "可以信任吗？",
+    trustDesc1: "可以，因为没有政府、银行或公司控制结果。系统脱离传统结构运行，基于任何人都可验证的公开规则。",
+    trustDesc2: "无审查地运行带来真实优势：没人能干预参与、操纵计算或隐藏数据。一切记录在区块链上，公开可审计。",
+    trustDesc3: "该模型避免空洞承诺，将信任建立在可证明之上：开源代码、公开数据与可复现结果。",
+    whoTitle: "我们是谁？",
+    whoBody: "我们是一支厌倦空洞承诺的团队。我们建立了独立、安全、透明的结构，不依赖政府、银行或“黑箱”。与传统彩票（如“双色球”）不同，在这里你无需信任机构：一切都可在区块链上验证，规则公开、计算确定、数据开放。结果不是意见，而是数学。每一笔参与和每一次支付都会记录，任何人都可审计。这是真正的自由：公平、全球、无审查且不被操纵的抽奖。这个项目旨在证明可以用正确的方式做得更好。",
+    copiedToast: "已复制！",
+    noCompletedDraw: "暂无已完成的抽奖。",
+    seedUnavailable: "Seed blockhash 不可用。"
+  },
+  ja: {
+    title: "公開監査 — 透明なビットコイン抽選",
+    monitoredWalletLabel: "監視ウォレット：",
+    langLabel: "言語",
+    copy: "コピー",
+    copyAddress: "アドレスをコピー",
+    currentRoundTitle: "現在のラウンド",
+    exactEntriesLabel: "正確な金額のエントリー数：",
+    missingLabel: "不足",
+    missingSuffix: "件でサイクル完了。",
+    participateTitle: "参加方法",
+    sendExact: "ちょうど次の金額を送金",
+    toAddress: "このアドレスへ：",
+    participationConfirm: "✅ 完了！正確な金額を送れば現在の賞金に参加できます。",
+    openExplorer: "エクスプローラーで開く",
+    refresh: "更新",
+    auditTip: "ヒント：誰でも公開エクスプローラーでビットコインのブロックチェーン上のエントリーと支払いを確認できます。",
+    lastWinnersTitle: "最新の当選者",
+    loadingExplorer: "エクスプローラーデータを読み込み中…",
+    exportJson: "JSON をエクスポート",
+    prizeTitle: "賞金",
+    entriesWord: " エントリー",
+    auditTitle: "監査ツールボックス — 直近の完了抽選",
+    auditIntro: "このセクションは直近の完了サイクル（終了した抽選）を監査します。順序付きエントリー一覧、seed blockhash、決定的な当選計算を表示します。誰でも同じ結果を再現できます。",
+    exportCycle: "エクスポート",
+    recalc: "再計算",
+    auditStepsTitle: "検証方法（クイックステップ）",
+    step1: "監視アドレスを公開エクスプローラーで開き、エントリーがオンチェーンに存在することを確認します。",
+    step2: "順序を確認：ブロック高 → txid → 出力インデックス（vout）が表と一致すること。",
+    step3: "Seed = 完了サイクルの最後のエントリーのブロックハッシュ。",
+    step4: "サイクルの全 txid + seed blockhash を連結し、SHA-256 を適用。",
+    step5: "当選インデックス = ハッシュを大きな整数として mod TARGET_ENTRIES。",
+    auditDataTitle: "監査データ（直近の完了抽選）",
+    cycleId: "サイクル ID",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "当選インデックス",
+    winnerEntry: "当選エントリー txid",
+    openWinnerTx: "当選 tx を開く",
+    copyVerify: "検証文字列をコピー",
+    verifyStringInfo: "「検証文字列」= txid1|txid2|...|txidN|seed_blockhash（どこでも SHA-256 でハッシュ可能）。",
+    entryListTitle: "エントリー一覧（直近の完了抽選）",
+    entryListHint: "監視アドレスへの正確な金額の支払いのみ有効です。誤った金額は無効。",
+    thTxid: "Txid",
+    thBlock: "ブロック",
+    thFrom: "送信元（推定）",
+    thAmount: "金額",
+    thActions: "操作",
+    loadingEntries: "エントリーを読み込み中…",
+    auditNote: "注記：「送信元」は vin[0]（エクスプローラー API）から推定され、参加者の最終アドレスではない可能性があります。",
+    footerText: "分散型監査 • 完全な透明性 • Bitcoin",
+    transparencyTitle: "透明性第一",
+    transparencyDesc1: "ここではラウンドをリアルタイムで追跡し、進捗を確認し、結果を自分で検証できます。中間者なし、近道なし。",
+    transparencyDesc2: "各エントリーはオンチェーンに記録され、当選計算は決定的で、最初から最後まで公開監査が可能です。透明性は約束ではなく、ルールです。",
+    trustTitle: "信頼できる？",
+    trustDesc1: "はい。政府や銀行、企業が結果をコントロールすることはありません。誰でも検証できる公開ルールに基づき、伝統的な構造の外で動きます。",
+    trustDesc2: "検閲なしで動く自由は実利があります。誰もエントリーに干渉したり、計算を操作したり、データを隠したりできません。すべてブロックチェーンに記録され、監査可能です。",
+    trustDesc3: "このモデルは空虚な約束を避け、証明可能なものに信頼を置きます。オープンコード、公開データ、再現可能な結果です。",
+    whoTitle: "私たちについて",
+    whoBody: "私たちは空虚な約束に疲れたチームです。政府や銀行、「ブラックボックス」に依存しない、独立・安全・透明な仕組みを作りました。従来の宝くじ（例えばロト7）とは違い、ここでは組織を信頼する必要がありません。公開ルール、決定的な計算、オープンデータにより、すべてがブロックチェーン上で検証できます。結果は意見ではなく数学です。すべてのエントリーと支払いが記録され、誰でも監査できます。これは本当の自由です。公正でグローバル、検閲も操作もない抽選。このプロジェクトは、正しく、そしてより良くできることを証明するために存在します。",
+    copiedToast: "コピーしました！",
+    noCompletedDraw: "完了した抽選はまだありません。",
+    seedUnavailable: "Seed blockhash が利用できません。"
+  },
+  ko: {
+    title: "공개 감사 — 투명한 비트코인 추첨",
+    monitoredWalletLabel: "모니터링 지갑:",
+    langLabel: "언어",
+    copy: "복사",
+    copyAddress: "주소 복사",
+    currentRoundTitle: "현재 라운드",
+    exactEntriesLabel: "정확한 금액 참여 수:",
+    missingLabel: "부족",
+    missingSuffix: "개가 남았습니다.",
+    participateTitle: "참여 방법",
+    sendExact: "정확히 다음 금액 전송",
+    toAddress: "이 주소로:",
+    participationConfirm: "✅ 완료! 정확한 금액을 보내면 현재 상금에 바로 참여됩니다.",
+    openExplorer: "탐색기에서 열기",
+    refresh: "새로고침",
+    auditTip: "팁: 누구나 공개 탐색기를 통해 비트코인 블록체인에서 참여와 지급을 직접 확인할 수 있습니다.",
+    lastWinnersTitle: "최근 당첨자",
+    loadingExplorer: "탐색기 데이터 로딩 중...",
+    exportJson: "JSON 내보내기",
+    prizeTitle: "상금",
+    entriesWord: " 참여",
+    auditTitle: "감사 도구 — 최근 완료된 추첨",
+    auditIntro: "이 섹션은 최근 완료된 사이클(종료된 추첨)을 감사합니다. 정렬된 참여 목록, seed blockhash, 결정론적 당첨 계산을 표시합니다. 누구나 동일한 결과를 재현할 수 있습니다.",
+    exportCycle: "내보내기",
+    recalc: "재계산",
+    auditStepsTitle: "검증 방법(빠른 단계)",
+    step1: "모니터링 주소를 공개 탐색기에서 열고 참여가 온체인에 존재하는지 확인합니다.",
+    step2: "순서를 확인: 블록 높이 → txid → 출력 인덱스(vout)가 표와 일치해야 합니다.",
+    step3: "Seed = 완료된 사이클의 마지막 참여 블록 해시.",
+    step4: "사이클의 모든 txid + seed blockhash를 연결한 뒤 SHA-256 적용.",
+    step5: "당첨 인덱스 = 해시를 큰 정수로 보고 mod TARGET_ENTRIES.",
+    auditDataTitle: "감사 데이터(최근 완료된 추첨)",
+    cycleId: "사이클 ID",
+    seedBlockhash: "Seed blockhash",
+    winnerIndex: "당첨 인덱스",
+    winnerEntry: "당첨 참여 txid",
+    openWinnerTx: "당첨 tx 열기",
+    copyVerify: "검증 문자열 복사",
+    verifyStringInfo: "“검증 문자열” = txid1|txid2|...|txidN|seed_blockhash (어디서든 SHA-256 해시 가능).",
+    entryListTitle: "참여 목록(최근 완료된 추첨)",
+    entryListHint: "모니터링 주소로 정확한 금액이 전송된 경우만 유효합니다. 잘못된 금액은 무시됩니다.",
+    thTxid: "Txid",
+    thBlock: "블록",
+    thFrom: "보낸 곳(추정)",
+    thAmount: "금액",
+    thActions: "작업",
+    loadingEntries: "참여 로딩 중...",
+    auditNote: "참고: “보낸 곳”은 vin[0] (탐색기 API)에서 추정되며 최종 주소가 아닐 수 있습니다.",
+    footerText: "탈중앙화 감사 • 완전한 투명성 • Bitcoin",
+    transparencyTitle: "투명성이 최우선",
+    transparencyDesc1: "여기에서 라운드를 실시간으로 추적하고 진행 상황을 확인하며 결과를 직접 검증할 수 있습니다. 중개자 없음, 지름길 없음.",
+    transparencyDesc2: "모든 참여는 온체인에 기록되고 당첨 계산은 결정론적이어서 시작부터 끝까지 공개 감사가 가능합니다. 투명성은 약속이 아니라 규칙입니다.",
+    trustTitle: "믿을 수 있나요?",
+    trustDesc1: "네, 정부나 은행, 기업이 결과를 통제하지 않습니다. 누구나 검증 가능한 공개 규칙에 기반해 전통적 구조 밖에서 작동합니다.",
+    trustDesc2: "검열 없이 운영되는 자유는 실제 이점을 가져옵니다. 누구도 참여를 방해하거나 계산을 조작하거나 데이터를 숨길 수 없습니다. 모든 것이 블록체인에 기록되어 감사 가능합니다.",
+    trustDesc3: "이 모델은 허황된 약속을 피하고 검증 가능한 것에 신뢰를 둡니다: 오픈 코드, 공개 데이터, 재현 가능한 결과.",
+    whoTitle: "우리는 누구인가요?",
+    whoBody: "우리는 공허한 약속에 지친 팀입니다. 정부, 은행, “블랙박스”에 의존하지 않는 독립적이고 안전하며 투명한 구조를 만들었습니다. 전통적 복권(예: 로또 6/45)과 달리 여기서는 기관을 믿을 필요가 없습니다. 공개 규칙, 결정론적 계산, 오픈 데이터로 모든 것이 블록체인에서 검증됩니다. 결과는 의견이 아니라 수학입니다. 모든 참여와 지급이 기록되며 누구나 감사할 수 있습니다. 이것이 진정한 자유입니다: 공정하고 글로벌하며 검열과 조작이 없는 추첨. 이 프로젝트는 올바르게, 그리고 더 잘할 수 있다는 것을 증명하기 위해 존재합니다.",
+    copiedToast: "복사되었습니다!",
+    noCompletedDraw: "아직 완료된 추첨이 없습니다.",
+    seedUnavailable: "Seed blockhash를 사용할 수 없습니다."
   }
 };
 
+let currentLang = "pt";
 function getDict(lang){ return i18n[lang] || i18n.en; }
+function t(key){
+  const dict = getDict(currentLang);
+  return dict[key] || i18n.en[key] || key;
+}
 function applyI18n(lang){
   const dict = getDict(lang);
+  currentLang = lang;
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     const key = el.getAttribute("data-i18n");
@@ -604,7 +1268,7 @@ function toast(msg){
 async function copyText(text){
   try{
     await navigator.clipboard.writeText(text);
-    toast("Copied!");
+    toast(t("copiedToast"));
   }catch(e){
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -612,7 +1276,7 @@ async function copyText(text){
     ta.select();
     document.execCommand("copy");
     ta.remove();
-    toast("Copied!");
+    toast(t("copiedToast"));
   }
 }
 function satsToBtcString(sats){ return (sats/100000000).toFixed(8) + " BTC"; }
@@ -746,7 +1410,7 @@ async function recalcWinnerLastCompleted(){
     winnerIndex = null;
     winnerTxid = "";
     paintAuditFields();
-    toast("No completed draw yet.");
+    toast(t("noCompletedDraw"));
     return;
   }
 
@@ -757,7 +1421,7 @@ async function recalcWinnerLastCompleted(){
     winnerTxid = "";
     verifyString = "";
     paintAuditFields();
-    toast("Seed blockhash unavailable.");
+    toast(t("seedUnavailable"));
     return;
   }
 
@@ -929,8 +1593,8 @@ document.getElementById("copyVerifyString").addEventListener("click", ()=>{
 
 /** Language */
 const langSelect = document.getElementById("langSelect");
-langSelect.value = "en";
-applyI18n("en");
+langSelect.value = "pt";
+applyI18n("pt");
 langSelect.addEventListener("change", (e)=>applyI18n(e.target.value));
 
 /** Init */
