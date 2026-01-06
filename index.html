@@ -87,13 +87,13 @@
 
 <header>
   <h1>Auditoria Pública – Sorteio Transparente em Bitcoin</h1>
-  <p>Carteira monitorada: <strong>bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca</strong></p>
+  <p>Carteira do Sorteio: <strong>bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca</strong></p>
 </header>
 
 <div class="container">
 
   <div class="card" id="winners">
-    <h2>Últimos Ganhadores (últimos 5 payouts)</h2>
+    <h2>Últimos Ganhadores (últimos 5)</h2>
     <ul id="winnerList">
       <li>Carregando dados do explorador...</li>
     </ul>
@@ -109,60 +109,89 @@
   </div>
 
   <div class="card">
-    <h2>Guia rápido de auditoria (qualquer usuário)</h2>
+    <h2>Guia final de auditoria e justiça do sorteio</h2>
 
-    <p>Este sorteio é <strong>100% auditável</strong> usando apenas um explorador de blocos. Nenhuma confiança no operador é necessária.</p>
+    <p><strong>Este sorteio foi projetado para ser matematicamente justo, automático e verificável por qualquer pessoa</strong>, mesmo sem conhecimento técnico. Tudo acontece diretamente na blockchain do Bitcoin.</p>
 
-    <h3>📌 Dados públicos necessários</h3>
-    <ul>
-      <li>Endereço monitorado</li>
-      <li>Valor fixo por entrada: <code>0.00014000 BTC</code></li>
-      <li>Entradas por ciclo: <code>200</code></li>
-      <li>Hash do bloco de fechamento do ciclo (<code>seed_blockhash</code>)</li>
-      <li>Lista de txids das entradas do ciclo (ordenadas)</li>
-      <li>Fingerprint declarado pelo operador</li>
-    </ul>
-
-    <h3>1️⃣ Reunir as entradas</h3>
-    <ul>
-      <li>Liste todas as transações recebidas no endereço com o valor exato.</li>
-      <li>Separe o lote do ciclo atual (200 entradas).</li>
-      <li>Ordene por <code>blockheight → txid → vout</code>.</li>
-      <li>Confirme que existem exatamente 200 entradas.</li>
-    </ul>
-
-    <h3>2️⃣ Recalcular seed e fingerprint</h3>
+    <h3>🧠 Explicação simples (para quem não entende de tecnologia)</h3>
     <p>
-      <code>seed_material = seed_blockhash + "|" + txids_ordenados</code>
+      Pense neste sorteio como uma <strong>caixa transparente</strong>:
+    </p>
+    <ul>
+      <li>Todos enviam exatamente o <strong>mesmo valor</strong>.</li>
+      <li>Todas as entradas ficam registradas publicamente no Bitcoin.</li>
+      <li>Ninguém pode apagar, alterar ou esconder uma entrada.</li>
+      <li>Quando a caixa enche (200 entradas), ela é <strong>lacrada automaticamente</strong>.</li>
+    </ul>
+
+    <p>
+      A partir desse momento, <strong>nem o operador do sorteio consegue mudar o resultado</strong>.
+      O vencedor é escolhido por uma conta matemática feita com dados públicos do próprio Bitcoin.
+    </p>
+
+    <h3>🎯 Como participar (regra única)</h3>
+    <ul>
+      <li>Envie exatamente <code>0.00014000 BTC</code></li>
+      <li>Para o endereço: <br><code>bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca</code></li>
+      <li>Aguarde no mínimo <strong>2 confirmações</strong> da rede</li>
+      <li>Cada envio válido = 1 chance igual a todas as outras</li>
+    </ul>
+
+    <h3>💰 Retorno do prêmio</h3>
+    <p>
+      O vencedor recebe <strong>0.02730000 BTC</strong>, que corresponde a <strong>195 entradas</strong>.
     </p>
     <p>
-      <code>fingerprint = sha256(seed_material)</code>
+      O valor em moeda local é apenas informativo e depende da cotação do Bitcoin no momento do pagamento.
     </p>
-    <p>O fingerprint calculado deve ser <strong>idêntico</strong> ao divulgado pelo operador.</p>
 
-    <h3>3️⃣ Determinar o vencedor</h3>
+    <h3>🔢 Explicação técnica (como o cálculo funciona)</h3>
+    <ol>
+      <li>As 200 entradas válidas são ordenadas automaticamente por bloco, transação e saída.</li>
+      <li>O <code>seed_blockhash</code> é o <strong>hash do bloco da última entrada do ciclo</strong>.</li>
+      <li>Todos os txids do ciclo são concatenados junto com esse blockhash.</li>
+      <li>É aplicado o algoritmo <strong>SHA-256</strong>, usado pelo próprio Bitcoin.</li>
+      <li>O número final define o vencedor de forma matemática.</li>
+    </ol>
+
+    <h3>🔍 Por que isso é 100% auditável?</h3>
+    <ul>
+      <li>Todas as entradas estão na blockchain (dados públicos).</li>
+      <li>A ordem das entradas não pode ser manipulada.</li>
+      <li>O bloco usado como seed não pode ser escolhido manualmente.</li>
+      <li>O mesmo cálculo sempre gera o mesmo vencedor.</li>
+      <li>Qualquer pessoa pode repetir o cálculo e chegar ao mesmo resultado.</li>
+    </ul>
+
+    <h3>⚖️ Por que este sorteio é mais justo do que qualquer outro?</h3>
+    <ul>
+      <li>Não existe "admin escolhendo vencedor".</li>
+      <li>Não existe algoritmo oculto.</li>
+      <li>Não existe vantagem para quem organiza.</li>
+      <li>Não existe possibilidade de alterar o resultado depois.</li>
+    </ul>
+
     <p>
-      <code>winner_idx = int(sha256(seed_material), 16) % 200</code>
+      Aqui, <strong>cada participante tem exatamente a mesma chance</strong>.
+      Uma entrada vale o mesmo para todos, sem exceção.
     </p>
-    <p>O txid na posição <code>winner_idx</code> da lista ordenada é o vencedor do ciclo.</p>
 
-    <h3>4️⃣ Validar o pagamento</h3>
+    <h3>📈 Chance real de ganhar</h3>
+    <p>
+      Com 200 participantes:
+    </p>
     <ul>
-      <li>Abra o txid de payout divulgado.</li>
-      <li>Confirme saída para o endereço vencedor.</li>
-      <li>Valor = <code>0.00014000 BTC × cotas pagas</code>.</li>
+      <li>Chance de vitória: <strong>1 em 200</strong> (0,5%)</li>
+      <li>Isso é significativamente melhor do que loterias tradicionais.</li>
+      <li>Não existe acúmulo, pegadinhas ou letras pequenas.</li>
     </ul>
 
-    <h3>🔍 Por que isso é justo?</h3>
-    <ul>
-      <li>Todas as entradas são públicas e on-chain.</li>
-      <li>A ordem é determinística.</li>
-      <li>O seed usa um blockhash fora do controle do operador.</li>
-      <li>SHA-256 elimina qualquer escolha manual.</li>
-      <li>O pagamento é verificável no blockchain.</li>
-    </ul>
-
-    <p><strong>Se algo não bater:</strong> qualquer pessoa pode refazer todos os cálculos de forma independente.</p>
+    <p><strong>Resumo final:</strong></p>
+    <p>
+      Este sorteio é justo porque segue as mesmas regras do Bitcoin:
+      matemática, transparência e impossibilidade de manipulação.
+      Você não precisa confiar em ninguém — apenas verificar.
+    </p>
   </div>
 
 </div>
