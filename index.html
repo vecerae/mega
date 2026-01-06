@@ -166,9 +166,7 @@
       border-color: rgba(0,224,255,.45);
     }
     .btn.small{ padding: 7px 10px; border-radius: 9px; font-size: 12px; }
-    .btn.link{
-      text-decoration:none;
-    }
+    .btn.link{ text-decoration:none; }
 
     .toast{
       position: fixed;
@@ -244,6 +242,17 @@
       opacity: 0.7;
     }
     a{ color: inherit; }
+
+    .callout{
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,224,255,.22);
+      background: rgba(0,224,255,.07);
+      color: rgba(210, 250, 255, .95);
+      font-size: 13px;
+      line-height: 1.45;
+    }
   </style>
 </head>
 <body>
@@ -261,20 +270,19 @@
 
 <div class="container">
 
-  <!-- Keep top clean like before; language selector goes here, not in header -->
   <div class="top-actions">
     <div class="pill">
       <span class="muted" data-i18n="langLabel">Language</span>
       <select id="langSelect">
         <option value="en">🇺🇸 English</option>
-        <option value="es">🇪🇸 Español</option>
-        <option value="ru">🇷🇺 Русский</option>
         <option value="pt">🇧🇷 Português</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="ru">🇷🇺 Русский</option>
         <option value="zh">🇨🇳 中文</option>
         <option value="ja">🇯🇵 日本語</option>
         <option value="ko">🇰🇷 한국어</option>
-        <option value="it">🇮🇹 Italiano</option>
-        <option value="fr">🇫🇷 Français</option>
       </select>
     </div>
   </div>
@@ -287,19 +295,15 @@
         <span class="badge ok" id="statusBadge">● Live</span>
       </h2>
 
-      <div class="row" style="justify-content:space-between">
-        <div>
-          <div class="sub">
-            <span data-i18n="exactEntriesLabel">Exact-value entries received:</span>
-            <span class="highlight" id="entryCount">0</span> / <span id="cycleTarget">200</span>
-          </div>
-          <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-          <div class="sub" style="margin-top:8px">
-            <span data-i18n="missingLabel">Missing</span>
-            <span class="highlight" id="missing">200</span>
-            <span data-i18n="missingSuffix">entries to close the cycle.</span>
-          </div>
-        </div>
+      <div class="sub">
+        <span data-i18n="exactEntriesLabel">Exact-value entries received:</span>
+        <span class="highlight" id="entryCount">0</span> / <span id="cycleTarget">200</span>
+      </div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="sub" style="margin-top:8px">
+        <span data-i18n="missingLabel">Missing</span>
+        <span class="highlight" id="missing">200</span>
+        <span data-i18n="missingSuffix">entries to close the cycle.</span>
       </div>
 
       <hr style="border:none;border-top:1px solid rgba(234,234,240,.08);margin:14px 0">
@@ -316,8 +320,12 @@
           <code class="mono" id="addrCode"></code>
           <button class="btn small primary" id="copyAddr" type="button">📋 <span data-i18n="copyAddress">Copy address</span></button>
         </li>
-        <li data-i18n="confirmations">Wait at least 2 confirmations.</li>
       </ul>
+
+      <div class="callout" data-i18n="participationConfirm">
+        ✅ Done! You are participating as soon as your transaction appears in the explorer as a valid entry:
+        an output of the exact amount to the monitored address.
+      </div>
 
       <div class="row" style="margin-top:10px">
         <a class="btn link" id="openMempoolAddress" target="_blank" rel="noopener">
@@ -335,7 +343,7 @@
 
     <div class="card" id="winners">
       <h2>
-        <span data-i18n="lastWinnersTitle">Latest Winners (last 5 payouts)</span>
+        <span data-i18n="lastWinnersTitle">Latest Winners</span>
         <button class="btn small" id="exportPayouts" type="button">⬇️ <span data-i18n="exportJson">Export JSON</span></button>
       </h2>
       <ul id="winnerList">
@@ -347,55 +355,39 @@
         <span class="highlight" id="prizeBtc"></span>
         <span class="muted">(</span><span class="highlight" id="prizeEntries"></span><span class="muted" data-i18n="entriesWord"> entries</span><span class="muted">)</span>
       </div>
-
-      <hr style="border:none;border-top:1px solid rgba(234,234,240,.08);margin:14px 0">
-
-      <h3 data-i18n="whyBetterTitle">🏆 Why this is better than traditional lotteries</h3>
-      <ul>
-        <li data-i18n="betterLi1">Much higher odds: the participant count is capped (no millions of tickets).</li>
-        <li data-i18n="betterLi2">Honesty by design: entries and payouts are public on-chain and verifiable.</li>
-        <li data-i18n="betterLi3">Fast settlement: payout can be made right after the cycle closes (after confirmations).</li>
-        <li data-i18n="betterLi4">No hidden tiers: every entry is identical for everyone.</li>
-        <li data-i18n="betterLi5">Clear rules: wrong amounts do not count — no ambiguity.</li>
-        <li data-i18n="betterLi6">No automatic “slices” like many lotteries (operator rules are explicit). Local taxes may still apply depending on your country.</li>
-      </ul>
-
-      <div class="sub" data-i18n="disclaimer">
-        Disclaimer: Bitcoin transactions may include miner fees and are subject to network conditions. BTC price volatility can affect local-currency value. Ensure legality in your jurisdiction and consult about tax obligations.
-      </div>
     </div>
 
   </div>
 
-  <!-- AUDIT TOOLBOX -->
+  <!-- AUDIT TOOLBOX (LAST COMPLETED DRAW) -->
   <div class="card" id="audit">
     <h2>
-      <span data-i18n="auditTitle">Audit Toolbox (verify fairness yourself)</span>
+      <span data-i18n="auditTitle">Audit Toolbox – Last Completed Draw</span>
       <div class="row">
-        <button class="btn small" id="exportCycle" type="button">⬇️ <span data-i18n="exportCycle">Export current cycle</span></button>
-        <button class="btn small primary" id="recalcBtn" type="button">✅ <span data-i18n="recalc">Recalculate winner</span></button>
+        <button class="btn small" id="exportCycle" type="button">⬇️ <span data-i18n="exportCycle">Export</span></button>
+        <button class="btn small primary" id="recalcBtn" type="button">✅ <span data-i18n="recalc">Recalculate</span></button>
       </div>
     </h2>
 
     <div class="sub" data-i18n="auditIntro">
-      This section makes auditing easy: it shows the exact entry list (ordered), the seed blockhash, and a deterministic winner calculation.
-      Anyone can reproduce the same result.
+      This section audits the LAST COMPLETED cycle (closed draw). It shows the exact ordered entry list, the seed blockhash,
+      and the deterministic winner calculation. Anyone can reproduce the same result.
     </div>
 
     <div class="grid" style="margin-top:12px">
       <div class="card" style="margin:0;background:rgba(12,15,31,.35);border:1px solid rgba(234,234,240,.10)">
         <h3 style="margin-top:0" data-i18n="auditStepsTitle">How to validate (quick steps)</h3>
         <ol class="sub" style="margin:0;padding-left:18px">
-          <li data-i18n="step1">Open the monitored address in a public explorer and confirm the exact entries exist on-chain.</li>
-          <li data-i18n="step2">Verify the entry list ordering (block height → txid → output index) matches what you see in the table below.</li>
-          <li data-i18n="step3">Take the seed blockhash (block of the last entry of the cycle).</li>
+          <li data-i18n="step1">Open the monitored address in a public explorer and confirm the entries exist on-chain.</li>
+          <li data-i18n="step2">Confirm ordering: block height → txid → output index matches the table.</li>
+          <li data-i18n="step3">Seed = blockhash of the LAST entry of the completed cycle.</li>
           <li data-i18n="step4">Concatenate all cycle txids + seed blockhash, then SHA-256.</li>
-          <li data-i18n="step5">Winner index = hash as a big integer mod TARGET_ENTRIES.</li>
+          <li data-i18n="step5">Winner index = hash as big integer mod TARGET_ENTRIES.</li>
         </ol>
       </div>
 
       <div class="card" style="margin:0;background:rgba(12,15,31,.35);border:1px solid rgba(234,234,240,.10)">
-        <h3 style="margin-top:0" data-i18n="auditDataTitle">Audit data (auto-filled)</h3>
+        <h3 style="margin-top:0" data-i18n="auditDataTitle">Audit data (last completed draw)</h3>
 
         <div class="sub">
           <strong data-i18n="cycleId">Cycle ID</strong>: <span class="mono" id="cycleId">—</span>
@@ -421,12 +413,12 @@
         </div>
 
         <div class="sub" style="margin-top:10px" data-i18n="verifyStringInfo">
-          “Verify string” = txid1|txid2|...|txidN|seed_blockhash (you can hash it with SHA-256 anywhere).
+          “Verify string” = txid1|txid2|...|txidN|seed_blockhash (hash it with SHA-256 anywhere).
         </div>
       </div>
     </div>
 
-    <h3 style="margin-top:16px" data-i18n="entryListTitle">Ordered entry list (current cycle)</h3>
+    <h3 style="margin-top:16px" data-i18n="entryListTitle">Ordered entry list (last completed draw)</h3>
     <div class="sub" data-i18n="entryListHint">
       Only exact payments to the monitored address count. Wrong amounts are ignored.
     </div>
@@ -452,9 +444,9 @@
     </div>
 
     <div class="sub" style="margin-top:10px">
-      <span class="badge warn" id="auditNoteBadge">ℹ️</span>
+      <span class="badge warn">ℹ️</span>
       <span data-i18n="auditNote">
-        Note: “From” address is inferred from the first input (vin[0]) as provided by the explorer API and may not always represent the participant’s receiving address.
+        Note: “From” is inferred from vin[0] (explorer API) and may not represent the participant’s receiving address.
       </span>
     </div>
   </div>
@@ -469,10 +461,10 @@
 
 <script>
 /** =========================
- *  CONFIG (edit as you like)
+ *  CONFIG
  *  ========================= */
 const ADDRESS = 'bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca';
-const EXACT_VALUE = 14000; // satoshis (0.00014000 BTC)
+const EXACT_VALUE = 14000; // satoshis
 const TARGET_ENTRIES = 200;
 
 // Economics (edit freely)
@@ -484,8 +476,8 @@ const EXPLORER = 'https://mempool.space';
 const API = EXPLORER + '/api';
 
 /** =========================
- *  i18n – lightweight (keeps your original vibe)
- *  Default: English
+ *  i18n (kept simple & safe)
+ *  - Other languages fallback to English automatically
  *  ========================= */
 const i18n = {
   en: {
@@ -501,42 +493,34 @@ const i18n = {
     participateTitle: "How to participate",
     sendExact: "Send exactly",
     toAddress: "To this address:",
-    confirmations: "Wait at least 2 confirmations.",
+    participationConfirm: "✅ Done! You are participating as soon as your transaction appears in the explorer as a valid entry: an output of the exact amount to the monitored address.",
     openExplorer: "Open in explorer",
     refresh: "Refresh",
     auditTip: "Tip: anyone can verify entries and payouts directly on the Bitcoin blockchain using a public explorer.",
-    lastWinnersTitle: "Latest Winners (last 5 payouts)",
+    lastWinnersTitle: "Latest Winners",
     loadingExplorer: "Loading explorer data...",
     exportJson: "Export JSON",
     prizeTitle: "Prize",
     entriesWord: " entries",
-    whyBetterTitle: "🏆 Why this is better than traditional lotteries",
-    betterLi1: "Much higher odds: the participant count is capped (no millions of tickets).",
-    betterLi2: "Honesty by design: entries and payouts are public on-chain and verifiable.",
-    betterLi3: "Fast settlement: payout can be made right after the cycle closes (after confirmations).",
-    betterLi4: "No hidden tiers: every entry is identical for everyone.",
-    betterLi5: "Clear rules: wrong amounts do not count — no ambiguity.",
-    betterLi6: "No automatic “slices” like many lotteries (operator rules are explicit). Local taxes may still apply depending on your country.",
-    disclaimer: "Disclaimer: Bitcoin transactions may include miner fees and are subject to network conditions. BTC price volatility can affect local-currency value. Ensure legality in your jurisdiction and consult about tax obligations.",
-    auditTitle: "Audit Toolbox (verify fairness yourself)",
-    auditIntro: "This section makes auditing easy: it shows the exact entry list (ordered), the seed blockhash, and a deterministic winner calculation. Anyone can reproduce the same result.",
-    exportCycle: "Export current cycle",
-    recalc: "Recalculate winner",
+    auditTitle: "Audit Toolbox – Last Completed Draw",
+    auditIntro: "This section audits the LAST COMPLETED cycle (closed draw). It shows the exact ordered entry list, the seed blockhash, and the deterministic winner calculation. Anyone can reproduce the same result.",
+    exportCycle: "Export",
+    recalc: "Recalculate",
     auditStepsTitle: "How to validate (quick steps)",
-    step1: "Open the monitored address in a public explorer and confirm the exact entries exist on-chain.",
-    step2: "Verify the entry list ordering (block height → txid → output index) matches what you see in the table below.",
-    step3: "Take the seed blockhash (block of the last entry of the cycle).",
+    step1: "Open the monitored address in a public explorer and confirm the entries exist on-chain.",
+    step2: "Confirm ordering: block height → txid → output index matches the table.",
+    step3: "Seed = blockhash of the LAST entry of the completed cycle.",
     step4: "Concatenate all cycle txids + seed blockhash, then SHA-256.",
-    step5: "Winner index = hash as a big integer mod TARGET_ENTRIES.",
-    auditDataTitle: "Audit data (auto-filled)",
+    step5: "Winner index = hash as big integer mod TARGET_ENTRIES.",
+    auditDataTitle: "Audit data (last completed draw)",
     cycleId: "Cycle ID",
     seedBlockhash: "Seed blockhash",
     winnerIndex: "Winner index",
     winnerEntry: "Winner entry txid",
     openWinnerTx: "Open winner tx",
     copyVerify: "Copy verify string",
-    verifyStringInfo: "“Verify string” = txid1|txid2|...|txidN|seed_blockhash (you can hash it with SHA-256 anywhere).",
-    entryListTitle: "Ordered entry list (current cycle)",
+    verifyStringInfo: "“Verify string” = txid1|txid2|...|txidN|seed_blockhash (hash it with SHA-256 anywhere).",
+    entryListTitle: "Ordered entry list (last completed draw)",
     entryListHint: "Only exact payments to the monitored address count. Wrong amounts are ignored.",
     thTxid: "Txid",
     thBlock: "Block",
@@ -544,10 +528,9 @@ const i18n = {
     thAmount: "Amount",
     thActions: "Actions",
     loadingEntries: "Loading entries...",
-    auditNote: "Note: “From” address is inferred from the first input (vin[0]) as provided by the explorer API and may not always represent the participant’s receiving address.",
+    auditNote: "Note: “From” is inferred from vin[0] (explorer API) and may not represent the participant’s receiving address.",
     footerText: "Decentralized audit • Total transparency • Bitcoin"
   },
-
   pt: {
     title: "Auditoria Pública – Sorteio Transparente em Bitcoin",
     monitoredWalletLabel: "Carteira monitorada:",
@@ -561,34 +544,26 @@ const i18n = {
     participateTitle: "Como participar",
     sendExact: "Envie exatamente",
     toAddress: "Para este endereço:",
-    confirmations: "Aguarde no mínimo 2 confirmações.",
+    participationConfirm: "✅ Pronto! Você está participando assim que sua transação aparecer no explorador como entrada válida: uma saída com o valor exato para a carteira monitorada.",
     openExplorer: "Abrir no explorador",
     refresh: "Atualizar",
     auditTip: "Dica: qualquer pessoa pode verificar entradas e payouts diretamente na blockchain usando um explorador público.",
-    lastWinnersTitle: "Últimos Ganhadores (últimos 5 payouts)",
+    lastWinnersTitle: "Últimos Ganhadores",
     loadingExplorer: "Carregando dados do explorador...",
     exportJson: "Exportar JSON",
     prizeTitle: "Prêmio",
     entriesWord: " entradas",
-    whyBetterTitle: "🏆 Por que isso é melhor do que loterias tradicionais",
-    betterLi1: "Chance muito maior: número de participantes limitado (não são milhões de bilhetes).",
-    betterLi2: "Honestidade por design: entradas e payouts são públicos na blockchain e verificáveis.",
-    betterLi3: "Pagamento rápido: o payout pode ser feito assim que o ciclo fecha (após confirmações).",
-    betterLi4: "Sem níveis ocultos: cada entrada é igual para todos.",
-    betterLi5: "Regras claras: valores errados não contam — sem ambiguidade.",
-    betterLi6: "Sem “fatias automáticas” como em muitas loterias (regras explícitas). Impostos locais ainda podem se aplicar conforme seu país.",
-    disclaimer: "Aviso: transações de Bitcoin podem incluir taxas e dependem da rede. A volatilidade do BTC pode afetar o valor em moeda local. Verifique legalidade e obrigações fiscais.",
-    auditTitle: "Caixa de Ferramentas de Auditoria (verifique a justiça)",
-    auditIntro: "Esta seção facilita a auditoria: mostra a lista exata de entradas (ordenada), o seed blockhash e um cálculo determinístico do vencedor. Qualquer pessoa pode reproduzir o mesmo resultado.",
-    exportCycle: "Exportar ciclo atual",
-    recalc: "Recalcular vencedor",
+    auditTitle: "Caixa de Auditoria – Último Sorteio Fechado",
+    auditIntro: "Esta seção audita o ÚLTIMO ciclo COMPLETO (sorteio fechado). Ela mostra a lista ordenada de entradas, o seed blockhash e o cálculo determinístico do vencedor. Qualquer pessoa pode reproduzir o mesmo resultado.",
+    exportCycle: "Exportar",
+    recalc: "Recalcular",
     auditStepsTitle: "Como validar (passo a passo rápido)",
-    step1: "Abra o endereço monitorado em um explorador e confirme as entradas exatas on-chain.",
-    step2: "Verifique se a ordenação (bloco → txid → índice de saída) bate com a tabela abaixo.",
-    step3: "Pegue o seed blockhash (bloco da última entrada do ciclo).",
+    step1: "Abra o endereço monitorado em um explorador e confirme as entradas on-chain.",
+    step2: "Confirme a ordenação: altura do bloco → txid → índice de saída (vout) igual à tabela.",
+    step3: "Seed = blockhash do ÚLTIMO envio do ciclo completo.",
     step4: "Concatene todos os txids do ciclo + seed blockhash e aplique SHA-256.",
     step5: "Índice vencedor = hash como inteiro grande mod TARGET_ENTRIES.",
-    auditDataTitle: "Dados de auditoria (preenchido automaticamente)",
+    auditDataTitle: "Dados de auditoria (último sorteio fechado)",
     cycleId: "ID do ciclo",
     seedBlockhash: "Seed blockhash",
     winnerIndex: "Índice do vencedor",
@@ -596,7 +571,7 @@ const i18n = {
     openWinnerTx: "Abrir tx vencedora",
     copyVerify: "Copiar string de verificação",
     verifyStringInfo: "“String de verificação” = txid1|txid2|...|txidN|seed_blockhash (você pode hashear com SHA-256 em qualquer lugar).",
-    entryListTitle: "Lista ordenada de entradas (ciclo atual)",
+    entryListTitle: "Lista ordenada de entradas (último sorteio fechado)",
     entryListHint: "Somente pagamentos exatos para a carteira monitorada contam. Valores errados são ignorados.",
     thTxid: "Txid",
     thBlock: "Bloco",
@@ -604,16 +579,12 @@ const i18n = {
     thAmount: "Valor",
     thActions: "Ações",
     loadingEntries: "Carregando entradas...",
-    auditNote: "Nota: o campo “Origem” é inferido do primeiro input (vin[0]) conforme a API do explorador, e pode não representar o endereço de recebimento do participante.",
+    auditNote: "Nota: “Origem” é inferido do vin[0] (API do explorador) e pode não representar o endereço final do participante.",
     footerText: "Auditoria descentralizada • Transparência total • Bitcoin"
-  },
-
-  es: { ...null }, ru: { ...null }, zh: { ...null }, ja: { ...null }, ko: { ...null }, it: { ...null }, fr: { ...null }
+  }
 };
-// Minimal fallback for other languages: keep English
-function getDict(lang){
-  return i18n[lang] && i18n[lang].title ? i18n[lang] : i18n.en;
-}
+
+function getDict(lang){ return i18n[lang] || i18n.en; }
 function applyI18n(lang){
   const dict = getDict(lang);
   document.documentElement.lang = lang;
@@ -623,9 +594,7 @@ function applyI18n(lang){
   });
 }
 
-/** =========================
- *  UI helpers
- *  ========================= */
+/** UI helpers */
 function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -637,7 +606,6 @@ async function copyText(text){
     await navigator.clipboard.writeText(text);
     toast("Copied!");
   }catch(e){
-    // fallback
     const ta = document.createElement("textarea");
     ta.value = text;
     document.body.appendChild(ta);
@@ -647,13 +615,8 @@ async function copyText(text){
     toast("Copied!");
   }
 }
-function satsToBtcString(sats){
-  return (sats/100000000).toFixed(8) + " BTC";
-}
-function short(s, n=12){
-  if(!s) return "—";
-  return s.length<=n? s : (s.slice(0, n) + "…");
-}
+function satsToBtcString(sats){ return (sats/100000000).toFixed(8) + " BTC"; }
+function short(s, n=12){ if(!s) return "—"; return s.length<=n? s : (s.slice(0,n)+"…"); }
 function downloadJson(filename, obj){
   const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);
@@ -664,22 +627,19 @@ function downloadJson(filename, obj){
   URL.revokeObjectURL(url);
 }
 
-/** =========================
- *  Data model
- *  ========================= */
+/** Data */
 let payoutsCache = [];
-let currentCycleEntries = []; // ordered
-let currentCycleId = 0;
-let currentSeedBlockhash = "";
-let currentVerifyString = "";
-let currentWinnerIndex = null;
-let currentWinnerTxid = "";
+let allExactEntries = [];
+let lastCompletedEntries = [];  // ← audit uses this
+let currentCycleEntries = [];   // ← progress uses this
+let lastCompletedCycleId = 0;
 
-/** =========================
- *  Fetch helpers (pagination)
- *  mempool API returns 25 txs per page for /address/:address/txs
- *  Use /address/:address/txs/chain/:last_txid to paginate
- *  ========================= */
+let seedBlockhash = "";
+let verifyString = "";
+let winnerIndex = null;
+let winnerTxid = "";
+
+/** Pagination */
 async function fetchAddressTxsAll(maxPages=30){
   let all = [];
   let url = `${API}/address/${ADDRESS}/txs`;
@@ -690,61 +650,51 @@ async function fetchAddressTxsAll(maxPages=30){
     if(!Array.isArray(page) || page.length===0) break;
     all.push(...page);
     const last = page[page.length-1];
-    if(!last || !last.txid) break;
+    if(!last?.txid) break;
     url = `${API}/address/${ADDRESS}/txs/chain/${last.txid}`;
     if(page.length < 25) break;
   }
   return all;
 }
 
-/** =========================
- *  Extract entries + payouts from tx list
- *  ========================= */
 function extractFromTxs(txs){
-  // Entries: exact output to ADDRESS with EXACT_VALUE
   const entries = [];
   const payouts = [];
 
   txs.forEach(tx=>{
-    // payouts: any output to NOT ADDRESS with value > EXACT_VALUE (best-effort heuristic)
-    if(Array.isArray(tx.vout)){
-      tx.vout.forEach((v, voutIndex)=>{
-        if(v?.scriptpubkey_address && v.scriptpubkey_address !== ADDRESS && v.value > EXACT_VALUE){
-          payouts.push({
-            txid: tx.txid,
-            to: v.scriptpubkey_address,
-            sats: v.value,
-            vout: voutIndex,
-            height: tx.status?.block_height ?? null,
-            block_hash: tx.status?.block_hash ?? null,
-            time: tx.status?.block_time ?? null
-          });
-        }
-      });
-    }
+    // payouts (heuristic)
+    tx.vout?.forEach((v, voutIndex)=>{
+      if(v?.scriptpubkey_address && v.scriptpubkey_address !== ADDRESS && v.value > EXACT_VALUE){
+        payouts.push({
+          txid: tx.txid,
+          to: v.scriptpubkey_address,
+          sats: v.value,
+          vout: voutIndex,
+          height: tx.status?.block_height ?? null,
+          block_hash: tx.status?.block_hash ?? null,
+          time: tx.status?.block_time ?? null
+        });
+      }
+    });
 
-    // entries: exact payment to ADDRESS
-    if(Array.isArray(tx.vout)){
-      tx.vout.forEach((v, voutIndex)=>{
-        if(v?.scriptpubkey_address === ADDRESS && v.value === EXACT_VALUE){
-          // best-effort "from": first input prevout address
-          const fromAddr = tx.vin?.[0]?.prevout?.scriptpubkey_address || tx.vin?.[0]?.prevout?.scriptpubkey_address || null;
-
-          entries.push({
-            txid: tx.txid,
-            vout: voutIndex,
-            sats: v.value,
-            height: tx.status?.block_height ?? null,
-            block_hash: tx.status?.block_hash ?? null,
-            time: tx.status?.block_time ?? null,
-            from: fromAddr
-          });
-        }
-      });
-    }
+    // exact entries
+    tx.vout?.forEach((v, voutIndex)=>{
+      if(v?.scriptpubkey_address === ADDRESS && v.value === EXACT_VALUE){
+        const fromAddr = tx.vin?.[0]?.prevout?.scriptpubkey_address || null;
+        entries.push({
+          txid: tx.txid,
+          vout: voutIndex,
+          sats: v.value,
+          height: tx.status?.block_height ?? null,
+          block_hash: tx.status?.block_hash ?? null,
+          time: tx.status?.block_time ?? null,
+          from: fromAddr
+        });
+      }
+    });
   });
 
-  // Sort entries in deterministic order: block_height asc, txid asc, vout asc
+  // deterministic ordering
   entries.sort((a,b)=>{
     const ah = a.height ?? 0, bh = b.height ?? 0;
     if(ah !== bh) return ah - bh;
@@ -752,100 +702,94 @@ function extractFromTxs(txs){
     return (a.vout ?? 0) - (b.vout ?? 0);
   });
 
-  // Sort payouts newest-first by height/time
   payouts.sort((a,b)=>{
     const ah = a.height ?? 0, bh = b.height ?? 0;
     if(ah !== bh) return bh - ah;
-    const at = a.time ?? 0, bt = b.time ?? 0;
-    return bt - at;
+    return (b.time ?? 0) - (a.time ?? 0);
   });
 
   return {entries, payouts};
 }
 
-/** =========================
- *  Determine current cycle entries
- *  ========================= */
-function computeCurrentCycle(allEntries){
-  const total = allEntries.length;
-  currentCycleId = Math.floor(total / TARGET_ENTRIES) + 1; // human-friendly cycle numbering
+function computeCycles(entries){
+  const total = entries.length;
+  const completedCycles = Math.floor(total / TARGET_ENTRIES);
   const remainder = total % TARGET_ENTRIES;
-  const start = total - remainder;
-  currentCycleEntries = allEntries.slice(start); // last remainder entries (current cycle)
-  return { total, remainder };
+
+  // current cycle (starts automatically right after closing!)
+  currentCycleEntries = entries.slice(completedCycles * TARGET_ENTRIES);
+
+  // last completed (for audit)
+  if(completedCycles > 0){
+    const start = (completedCycles - 1) * TARGET_ENTRIES;
+    lastCompletedEntries = entries.slice(start, start + TARGET_ENTRIES);
+    lastCompletedCycleId = completedCycles; // 1-based for completed cycles count
+  }else{
+    lastCompletedEntries = [];
+    lastCompletedCycleId = 0;
+  }
+
+  return { completedCycles, remainder, total };
 }
 
-/** =========================
- *  SHA-256 + BigInt mod
- *  ========================= */
 async function sha256Hex(str){
   const enc = new TextEncoder().encode(str);
   const digest = await crypto.subtle.digest("SHA-256", enc);
-  const arr = Array.from(new Uint8Array(digest));
-  return arr.map(b=>b.toString(16).padStart(2,"0")).join("");
+  return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-function hexToBigInt(hex){
-  return BigInt("0x" + hex);
-}
+function hexToBigInt(hex){ return BigInt("0x"+hex); }
 
-/** Winner calc (deterministic) */
-async function recalcWinner(){
-  if(currentCycleEntries.length === 0){
-    currentSeedBlockhash = "";
-    currentWinnerIndex = null;
-    currentWinnerTxid = "";
-    currentVerifyString = "";
+async function recalcWinnerLastCompleted(){
+  if(lastCompletedEntries.length !== TARGET_ENTRIES){
+    seedBlockhash = "";
+    verifyString = "";
+    winnerIndex = null;
+    winnerTxid = "";
     paintAuditFields();
-    toast("No entries yet.");
+    toast("No completed draw yet.");
     return;
   }
 
-  // Seed = block hash of the LAST entry we currently have (best-effort).
-  // If the cycle is complete, this is the last entry of the cycle.
-  const last = currentCycleEntries[currentCycleEntries.length - 1];
-  currentSeedBlockhash = last.block_hash || "";
-
-  // Build verify string: txid1|txid2|...|txidN|seed_blockhash
-  const txids = currentCycleEntries.map(e=>e.txid);
-  currentVerifyString = txids.join("|") + "|" + (currentSeedBlockhash || "");
-
-  // If seed blockhash missing (unconfirmed), can't finalize deterministically
-  if(!currentSeedBlockhash){
-    currentWinnerIndex = null;
-    currentWinnerTxid = "";
+  const last = lastCompletedEntries[lastCompletedEntries.length - 1];
+  seedBlockhash = last.block_hash || "";
+  if(!seedBlockhash){
+    winnerIndex = null;
+    winnerTxid = "";
+    verifyString = "";
     paintAuditFields();
-    toast("Seed blockhash unavailable (unconfirmed).");
+    toast("Seed blockhash unavailable.");
     return;
   }
 
-  const h = await sha256Hex(currentVerifyString);
-  const idx = Number(hexToBigInt(h) % BigInt(TARGET_ENTRIES)); // deterministic
-  currentWinnerIndex = idx;
+  const txids = lastCompletedEntries.map(e=>e.txid);
+  verifyString = txids.join("|") + "|" + seedBlockhash;
 
-  // Winner txid: for a full cycle, index maps to cycle entries.
-  // For an incomplete cycle, it still maps deterministically, but “winner” is only final when cycle closes.
-  const winnerEntry = currentCycleEntries[idx] || null;
-  currentWinnerTxid = winnerEntry?.txid || "";
+  const h = await sha256Hex(verifyString);
+  winnerIndex = Number(hexToBigInt(h) % BigInt(TARGET_ENTRIES));
+  winnerTxid = lastCompletedEntries[winnerIndex]?.txid || "";
 
   paintAuditFields();
 }
 
-/** =========================
- *  Render
- *  ========================= */
+function paintProgress(){
+  const remainder = currentCycleEntries.length;
+  document.getElementById("entryCount").textContent = remainder;
+  document.getElementById("cycleTarget").textContent = TARGET_ENTRIES;
+  document.getElementById("missing").textContent = TARGET_ENTRIES - remainder;
+  document.getElementById("progressBar").style.width = (remainder / TARGET_ENTRIES * 100) + "%";
+}
+
 function paintWinners(){
   const ul = document.getElementById("winnerList");
   ul.innerHTML = "";
-
-  const top5 = payoutsCache.slice(0,5);
-  if(top5.length === 0){
+  const top = payoutsCache.slice(0,5);
+  if(top.length === 0){
     const li = document.createElement("li");
     li.textContent = "—";
     ul.appendChild(li);
     return;
   }
-
-  top5.forEach(p=>{
+  top.forEach(p=>{
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.href = `${EXPLORER}/tx/${p.txid}`;
@@ -857,27 +801,11 @@ function paintWinners(){
   });
 }
 
-function paintProgress(remainder){
-  document.getElementById("entryCount").textContent = remainder;
-  document.getElementById("cycleTarget").textContent = TARGET_ENTRIES;
-  document.getElementById("missing").textContent = TARGET_ENTRIES - remainder;
-  document.getElementById("progressBar").style.width = (remainder / TARGET_ENTRIES * 100) + "%";
-
-  const badge = document.getElementById("statusBadge");
-  if(remainder === 0){
-    badge.className = "badge ok";
-    badge.textContent = "● Live";
-  } else {
-    badge.className = "badge ok";
-    badge.textContent = "● Live";
-  }
-}
-
 function paintEntryTable(){
   const tbody = document.getElementById("entryTbody");
   tbody.innerHTML = "";
 
-  if(currentCycleEntries.length === 0){
+  if(lastCompletedEntries.length !== TARGET_ENTRIES){
     const tr = document.createElement("tr");
     const td = document.createElement("td");
     td.colSpan = 6;
@@ -888,45 +816,29 @@ function paintEntryTable(){
     return;
   }
 
-  currentCycleEntries.forEach((e, i)=>{
+  lastCompletedEntries.forEach((e, i)=>{
     const tr = document.createElement("tr");
 
-    const tdI = document.createElement("td");
-    tdI.textContent = i;
-    tdI.className = "mono";
-    tr.appendChild(tdI);
-
-    const tdTx = document.createElement("td");
-    tdTx.className = "mono";
-    tdTx.innerHTML = `<a href="${EXPLORER}/tx/${e.txid}" target="_blank" rel="noopener">${e.txid}</a><div class="muted">vout: ${e.vout}</div>`;
-    tr.appendChild(tdTx);
-
-    const tdB = document.createElement("td");
-    tdB.className = "mono";
-    tdB.innerHTML = `${e.height ?? "—"}<div class="muted">${e.block_hash ? short(e.block_hash, 14) : "—"}</div>`;
-    tr.appendChild(tdB);
-
-    const tdFrom = document.createElement("td");
-    tdFrom.className = "mono";
-    tdFrom.textContent = e.from || "—";
-    tr.appendChild(tdFrom);
-
-    const tdAmt = document.createElement("td");
-    tdAmt.className = "mono";
-    tdAmt.textContent = satsToBtcString(e.sats);
-    tr.appendChild(tdAmt);
-
-    const tdAct = document.createElement("td");
-    tdAct.innerHTML = `
-      <button class="btn small" type="button" data-copy-tx="${e.txid}">📋 Txid</button>
-      <button class="btn small" type="button" data-copy-from="${e.from || ""}">📋 From</button>
+    tr.innerHTML = `
+      <td class="mono">${i}</td>
+      <td class="mono">
+        <a href="${EXPLORER}/tx/${e.txid}" target="_blank" rel="noopener">${e.txid}</a>
+        <div class="muted">vout: ${e.vout}</div>
+      </td>
+      <td class="mono">
+        ${e.height ?? "—"}
+        <div class="muted">${e.block_hash ? short(e.block_hash, 14) : "—"}</div>
+      </td>
+      <td class="mono">${e.from || "—"}</td>
+      <td class="mono">${satsToBtcString(e.sats)}</td>
+      <td>
+        <button class="btn small" type="button" data-copy-tx="${e.txid}">📋 Txid</button>
+        <button class="btn small" type="button" data-copy-from="${e.from || ""}">📋 From</button>
+      </td>
     `;
-    tr.appendChild(tdAct);
-
     tbody.appendChild(tr);
   });
 
-  // bind copy buttons inside table
   tbody.querySelectorAll("[data-copy-tx]").forEach(btn=>{
     btn.addEventListener("click", ()=>copyText(btn.getAttribute("data-copy-tx")));
   });
@@ -940,51 +852,41 @@ function paintEntryTable(){
 }
 
 function paintAuditFields(){
-  document.getElementById("cycleId").textContent = String(currentCycleId);
-  document.getElementById("seedBlockhash").textContent = currentSeedBlockhash || "—";
-  document.getElementById("winnerIndex").textContent = (currentWinnerIndex === null ? "—" : String(currentWinnerIndex));
-  document.getElementById("winnerTxid").textContent = currentWinnerTxid || "—";
+  document.getElementById("cycleId").textContent = lastCompletedCycleId ? String(lastCompletedCycleId) : "—";
+  document.getElementById("seedBlockhash").textContent = seedBlockhash || "—";
+  document.getElementById("winnerIndex").textContent = (winnerIndex === null ? "—" : String(winnerIndex));
+  document.getElementById("winnerTxid").textContent = winnerTxid || "—";
 
   const openWinner = document.getElementById("openWinnerTx");
-  if(currentWinnerTxid){
-    openWinner.href = `${EXPLORER}/tx/${currentWinnerTxid}`;
-  } else {
-    openWinner.href = `${EXPLORER}`;
-  }
+  openWinner.href = winnerTxid ? `${EXPLORER}/tx/${winnerTxid}` : `${EXPLORER}`;
+
+  // store verifyString for copy/export
+  window.__VERIFY__ = verifyString || "";
 }
 
-/** =========================
- *  Main load
- *  ========================= */
 async function loadData(){
-  // UI static
   document.getElementById("addrHeader").textContent = ADDRESS;
   document.getElementById("addrCode").textContent = ADDRESS;
   document.getElementById("exactBtc").textContent = satsToBtcString(EXACT_VALUE);
   document.getElementById("prizeEntries").textContent = PRIZE_ENTRIES;
   document.getElementById("prizeBtc").textContent = satsToBtcString(PRIZE_SATS);
 
-  const openAddr = document.getElementById("openMempoolAddress");
-  openAddr.href = `${EXPLORER}/address/${ADDRESS}`;
+  document.getElementById("openMempoolAddress").href = `${EXPLORER}/address/${ADDRESS}`;
 
-  // fetch
   const txs = await fetchAddressTxsAll();
   const {entries, payouts} = extractFromTxs(txs);
   payoutsCache = payouts;
+  allExactEntries = entries;
 
-  const {remainder} = computeCurrentCycle(entries);
+  computeCycles(allExactEntries);
 
-  paintProgress(remainder);
+  paintProgress();
   paintWinners();
   paintEntryTable();
-
-  // Seed and winner calc are meaningful only when last entry is confirmed (has block hash)
-  await recalcWinner();
+  await recalcWinnerLastCompleted();
 }
 
-/** =========================
- *  Events
- *  ========================= */
+/** Buttons */
 document.getElementById("copyAddrTop").addEventListener("click", ()=>copyText(ADDRESS));
 document.getElementById("copyAddr").addEventListener("click", ()=>copyText(ADDRESS));
 document.getElementById("copyAmount").addEventListener("click", ()=>copyText(satsToBtcString(EXACT_VALUE)));
@@ -995,44 +897,43 @@ document.getElementById("exportPayouts").addEventListener("click", ()=>{
 });
 
 document.getElementById("exportCycle").addEventListener("click", ()=>{
-  downloadJson(`cycle_${currentCycleId}_entries.json`, {
-    cycleId: currentCycleId,
+  downloadJson(`last_completed_cycle_${lastCompletedCycleId || 0}.json`, {
+    cycleId: lastCompletedCycleId || null,
     address: ADDRESS,
     exact_sats: EXACT_VALUE,
     target_entries: TARGET_ENTRIES,
-    seed_blockhash: currentSeedBlockhash || null,
-    verify_string: currentVerifyString || null,
-    winner_index: currentWinnerIndex,
-    winner_txid: currentWinnerTxid || null,
-    entries: currentCycleEntries
+    seed_blockhash: seedBlockhash || null,
+    verify_string: (window.__VERIFY__ || null),
+    winner_index: winnerIndex,
+    winner_txid: winnerTxid || null,
+    entries: lastCompletedEntries
   });
 });
 
-document.getElementById("recalcBtn").addEventListener("click", recalcWinner);
+document.getElementById("recalcBtn").addEventListener("click", recalcWinnerLastCompleted);
 
-document.getElementById("copyCycleId").addEventListener("click", ()=>copyText(String(currentCycleId)));
+document.getElementById("copyCycleId").addEventListener("click", ()=>copyText(String(lastCompletedCycleId || "")));
 document.getElementById("copySeed").addEventListener("click", ()=>{
-  if(!currentSeedBlockhash) return toast("No seed.");
-  copyText(currentSeedBlockhash);
+  if(!seedBlockhash) return toast("No seed.");
+  copyText(seedBlockhash);
 });
 document.getElementById("copyWinnerTxid").addEventListener("click", ()=>{
-  if(!currentWinnerTxid) return toast("No txid.");
-  copyText(currentWinnerTxid);
+  if(!winnerTxid) return toast("No txid.");
+  copyText(winnerTxid);
 });
 document.getElementById("copyVerifyString").addEventListener("click", ()=>{
-  if(!currentVerifyString) return toast("No verify string.");
-  copyText(currentVerifyString);
+  const v = window.__VERIFY__ || "";
+  if(!v) return toast("No verify string.");
+  copyText(v);
 });
 
-// Language
+/** Language */
 const langSelect = document.getElementById("langSelect");
 langSelect.value = "en";
 applyI18n("en");
 langSelect.addEventListener("change", (e)=>applyI18n(e.target.value));
 
-/** =========================
- *  Init
- *  ========================= */
+/** Init */
 loadData();
 </script>
 
