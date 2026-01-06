@@ -2,250 +2,1037 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Provably Fair Bitcoin Cycle</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Public Audit – BTC Draw</title>
   <style>
-    :root {
-      --bg: #0b0f14;
-      --card: #121826;
-      --muted: #9aa4b2;
-      --accent: #22c55e;
-      --accent2: #38bdf8;
-      --danger: #ef4444;
-      --border: #1f2937;
-    }
-
     body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f1220;
+      color: #eaeaf0;
       margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(180deg, #0b0f14, #0e1420);
-      color: #e5e7eb;
+      padding: 0;
     }
+    header {
+      background: linear-gradient(135deg, #1f2bff, #00c2ff);
+      padding: 26px 16px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    header h1 { margin: 0; font-size: 24px; }
+    header p { margin-top: 8px; font-size: 13px; opacity: 0.95; word-break: break-all; }
 
-    .container {
+    .topbar {
       max-width: 1100px;
-      margin: auto;
-      padding: 32px 16px 120px;
+      margin: 10px auto 0;
+      padding: 0 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-
-    h1, h2, h3 {
-      margin-top: 0;
-      letter-spacing: -0.02em;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    }
-
-    .wallet {
-      font-size: 1.05rem;
-      word-break: break-all;
-      padding: 12px;
-      background: #020617;
-      border-radius: 12px;
-      border: 1px dashed var(--border);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 6px 12px;
+    .lang {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(12,15,31,0.55);
+      border: 1px solid rgba(234,234,240,0.15);
+      padding: 8px 10px;
       border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: rgba(34,197,94,.15);
-      color: var(--accent);
-      border: 1px solid rgba(34,197,94,.4);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+      backdrop-filter: blur(10px);
     }
-
-    .muted { color: var(--muted); }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
+    .lang label {
+      font-size: 12px;
+      opacity: 0.9;
     }
-
-    th, td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-
-    th { color: var(--muted); font-weight: 600; }
-
-    button {
-      background: linear-gradient(135deg, var(--accent), #16a34a);
-      border: none;
+    .lang select {
+      background: #0c0f1f;
+      color: #eaeaf0;
+      border: 1px solid rgba(234,234,240,0.18);
       border-radius: 10px;
-      padding: 10px 14px;
-      font-weight: 700;
-      color: #052e16;
+      padding: 8px 10px;
+      outline: none;
       cursor: pointer;
     }
 
-    button.secondary {
-      background: transparent;
-      color: var(--accent2);
-      border: 1px solid var(--border);
+    .container { max-width: 1100px; margin: 26px auto; padding: 0 16px; }
+    .card {
+      background: #161a2f;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 1px solid #2a2f55;
+      padding-bottom: 8px;
     }
+    h3 { margin: 14px 0 8px; font-size: 15px; }
+    ul { padding-left: 18px; }
+    li { margin-bottom: 6px; word-break: break-word; }
+    .highlight { color: #00e0ff; font-weight: bold; }
+    .progress { background: #0c0f1f; border-radius: 8px; overflow: hidden; height: 20px; margin-top: 10px; }
+    .progress-bar { background: linear-gradient(90deg, #00c2ff, #1f2bff); height: 100%; width: 0%; transition: width 0.4s ease; }
+    footer { text-align: center; padding: 18px; font-size: 12px; opacity: 0.7; }
+    code { background: #0c0f1f; padding: 4px 6px; border-radius: 6px; display: inline-block; margin: 4px 0; }
 
-    .code {
-      font-family: monospace;
-      font-size: 0.8rem;
-      background: #020617;
-      padding: 12px;
-      border-radius: 8px;
-      overflow-x: auto;
+    .note {
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.85;
+      line-height: 1.45;
+      border-left: 3px solid rgba(0,194,255,0.6);
+      padding: 8px 10px;
+      background: rgba(12,15,31,0.35);
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
+<header>
+  <h1 data-i18n="title">Public Audit – Transparent Bitcoin Draw</h1>
+
+  <div class="topbar">
+    <div class="lang" title="Language / Idioma">
+      <label for="langSelect" data-i18n="langLabel">Language</label>
+      <select id="langSelect">
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="fr">🇫🇷 Français</option>
+      </select>
+    </div>
+  </div>
+
+  <p>
+    <span data-i18n="monitoredWalletLabel">Monitored wallet:</span>
+    <strong id="addrHeader"></strong>
+  </p>
+</header>
+
 <div class="container">
 
-  <!-- HEADER -->
-  <div class="card">
-    <h1>Provably Fair Bitcoin Cycle</h1>
-    <p class="muted">100% on-chain • No API • No owner control • Fully auditable by anyone</p>
-
-    <h3>Receiving Wallet</h3>
-    <div class="wallet" id="wallet">bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca</div>
-
-    <div style="margin-top:12px">
-      <span class="badge" id="cycleStatus">Cycle open</span>
-    </div>
+  <div class="card" id="winners">
+    <h2 data-i18n="lastWinnersTitle">Latest Winners (last 5 payouts)</h2>
+    <ul id="winnerList">
+      <li data-i18n="loadingExplorer">Loading explorer data...</li>
+    </ul>
   </div>
 
-  <!-- LIVE CYCLE DATA -->
-  <div class="grid">
-    <div class="card">
-      <h3>Current Cycle</h3>
-      <p><b>Entries:</b> <span id="entriesCount">0</span> / 200</p>
-      <p><b>Remaining:</b> <span id="entriesRemaining">200</span></p>
-      <p><b>Fixed Entry Value:</b> 0.00014000 BTC</p>
-    </div>
-
-    <div class="card">
-      <h3>Seed & Randomness</h3>
-      <p class="muted">Automatically locked when entry #200 confirms</p>
-      <p><b>Seed blockhash:</b></p>
-      <div class="code" id="seedBlock">Waiting for cycle close…</div>
-    </div>
-
-    <div class="card">
-      <h3>Winner Calculation</h3>
-      <p><b>Winner index:</b></p>
-      <div class="code" id="winnerIndex">—</div>
-      <p class="muted">Calculated live from SHA‑256(seed_material)</p>
-    </div>
-  </div>
-
-  <!-- FINGERPRINT -->
-  <div class="card">
-    <h3>Public Fingerprint (Immutable)</h3>
-    <p class="muted">This hash permanently commits the cycle inputs and order</p>
-    <div class="code" id="fingerprint">—</div>
-  </div>
-
-  <!-- ACTIONS -->
-  <div class="grid">
-    <div class="card">
-      <h3>Transparency Tools</h3>
-      <button onclick="exportCSV()">Export cycle entries (CSV)</button>
-    </div>
-
-    <div class="card">
-      <h3>Latest Winners</h3>
-      <table id="winnersTable">
-        <thead>
-          <tr><th>TxID</th><th>Winner address</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- FULL AUDIT -->
-  <div class="card">
-    <h2>How anyone can audit this (no trust required)</h2>
+  <div class="card" id="participants">
+    <h2 data-i18n="currentRoundTitle">Current Round</h2>
     <p>
-      Every rule, number and result shown above is derived exclusively from public
-      Bitcoin blockchain data. No private server, no API, no owner discretion.
+      <span data-i18n="exactEntriesLabel">Exact-value entries received:</span>
+      <span class="highlight" id="entryCount">0</span> / <span id="cycleTarget">200</span>
+    </p>
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <p style="margin-top:10px">
+      <span data-i18n="missingLabel">Missing</span>
+      <span class="highlight" id="missing">200</span>
+      <span data-i18n="missingSuffix">entries to close the cycle.</span>
     </p>
 
+    <div class="note">
+      <span data-i18n="auditTip">
+        Tip: anyone can verify entries and payouts directly on the Bitcoin blockchain using a public explorer.
+      </span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="guideTitle">Final Audit Guide & Fairness Proof</h2>
+
+    <p data-i18n="guideIntro">
+      This draw is designed to be mathematically fair, automatic, and verifiable by anyone — even without technical knowledge.
+      Everything happens directly on the Bitcoin blockchain.
+    </p>
+
+    <h3 data-i18n="simpleExplainTitle">🧠 Simple explanation (for non-technical people)</h3>
+    <p data-i18n="simpleExplainBody">
+      Think of this draw like a transparent box:
+    </p>
+    <ul>
+      <li data-i18n="simpleLi1">Everyone sends exactly the same amount.</li>
+      <li data-i18n="simpleLi2">All entries are recorded publicly on Bitcoin.</li>
+      <li data-i18n="simpleLi3">No one can delete, change, or hide an entry.</li>
+      <li data-i18n="simpleLi4">When the box is full (target entries), it is sealed automatically.</li>
+    </ul>
+
+    <p data-i18n="sealedBody">
+      From that point on, not even the organizer can change the outcome.
+      The winner is chosen by a mathematical calculation using public Bitcoin data.
+    </p>
+
+    <h3 data-i18n="howToTitle">🎯 How to participate (single rule)</h3>
+    <ul>
+      <li><span data-i18n="howToLi1">Send exactly</span> <code id="exactBtc"></code></li>
+      <li>
+        <span data-i18n="howToLi2">To this address:</span><br>
+        <code id="addrCode"></code>
+      </li>
+      <li data-i18n="howToLi3">Wait at least 2 network confirmations.</li>
+      <li data-i18n="howToLi4">Each valid payment = 1 equal chance.</li>
+    </ul>
+
+    <h3 data-i18n="payoutTitle">💰 Prize payout</h3>
+    <p>
+      <span data-i18n="payoutBody1">The winner receives</span>
+      <strong id="prizeBtc"></strong>,
+      <span data-i18n="payoutBody2">which corresponds to</span>
+      <strong id="prizeEntries"></strong>
+      <span data-i18n="payoutBody3">entries.</span>
+    </p>
+    <p data-i18n="payoutBody4">
+      The local-currency value is informational only and depends on the BTC price at payout time.
+    </p>
+
+    <!-- NEW: WHY BETTER THAN LOTTERY -->
+    <h3 data-i18n="betterTitle">🏆 Why this is better than traditional lotteries</h3>
+    <ul>
+      <li data-i18n="betterLi1">Much higher odds: the participant count is capped (no millions of tickets).</li>
+      <li data-i18n="betterLi2">Same price for everyone: every entry is identical (no “premium tickets”, no hidden tiers).</li>
+      <li data-i18n="betterLi3">Full transparency: entries and payouts are public on-chain and can be audited by anyone.</li>
+      <li data-i18n="betterLi4">No “trust me”: the winner is derived from Bitcoin data + SHA-256 — repeatable and verifiable.</li>
+      <li data-i18n="betterLi5">Fast settlement: payouts can be sent as soon as the cycle closes (after confirmations).</li>
+      <li data-i18n="betterLi6">Lower overhead: no physical infrastructure, no retail agents, no paper tickets.</li>
+      <li data-i18n="betterLi7">
+        No automatic “slices” from the pot like many lotteries (operator rules are explicit). Note: local taxes may still apply depending on your country.
+      </li>
+      <li data-i18n="betterLi8">Clear rules: exact amount required; wrong amounts do not count — no ambiguity.</li>
+      <li data-i18n="betterLi9">Instant self-verification: you can verify your entry by checking the transaction on any explorer.</li>
+    </ul>
+
+    <h3 data-i18n="techTitle">🔢 Technical explanation (how the calculation works)</h3>
     <ol>
-      <li>All entries are sent to a single public address with an exact fixed value.</li>
-      <li>Entries are ordered deterministically by blockheight, txid and vout.</li>
-      <li>When entry #200 confirms, the cycle locks automatically.</li>
-      <li>The closing blockhash becomes the unpredictable seed.</li>
-      <li>A SHA‑256 hash commits the full ordered list (fingerprint).</li>
-      <li>The winner index is SHA‑256(seed) mod 200.</li>
-      <li>The payout transaction is publicly verifiable on‑chain.</li>
+      <li data-i18n="techLi1">All valid entries are ordered by block, transaction, and output.</li>
+      <li data-i18n="techLi2">The seed_blockhash is the block hash of the last entry of the cycle.</li>
+      <li data-i18n="techLi3">All txids in the cycle are concatenated together with that blockhash.</li>
+      <li data-i18n="techLi4">We apply SHA-256 (the same core hash used by Bitcoin).</li>
+      <li data-i18n="techLi5">The resulting number deterministically maps to the winner index.</li>
     </ol>
 
-    <h3>Common questions — answered</h3>
-    <p><b>“Does the owner have any advantage?”</b><br>
-      No. The owner cannot influence blockhashes, entry order or winner calculation.
+    <h3 data-i18n="auditableTitle">🔍 Why is it 100% auditable?</h3>
+    <ul>
+      <li data-i18n="auditLi1">All entries are on the blockchain (public data).</li>
+      <li data-i18n="auditLi2">The order of entries cannot be manipulated after confirmation.</li>
+      <li data-i18n="auditLi3">The seed block cannot be manually chosen after the fact.</li>
+      <li data-i18n="auditLi4">The same inputs always produce the same winner.</li>
+      <li data-i18n="auditLi5">Anyone can rerun the calculation and get the same result.</li>
+    </ul>
+
+    <h3 data-i18n="fairTitle">⚖️ Why is this fair?</h3>
+    <ul>
+      <li data-i18n="fairLi1">There is no admin choosing a winner.</li>
+      <li data-i18n="fairLi2">There is no hidden algorithm.</li>
+      <li data-i18n="fairLi3">There is no advantage to the organizer after entries are confirmed.</li>
+      <li data-i18n="fairLi4">There is no way to change the result after the cycle is sealed.</li>
+    </ul>
+
+    <p data-i18n="equalChance">
+      Here, every participant has exactly the same chance. One entry is one entry — no exceptions.
     </p>
 
-    <p><b>“Are there hidden fees?”</b><br>
-      No. All entries are identical and all payouts are visible on‑chain.
-      Network fees are paid by the operator and do not affect fairness.
+    <h3 data-i18n="oddsTitle">📈 Real winning odds</h3>
+    <p><span data-i18n="oddsBody1">With</span> <strong id="targetEntriesStrong">200</strong> <span data-i18n="oddsBody2">participants:</span></p>
+    <ul>
+      <li data-i18n="oddsLi1">Winning odds: 1 in 200 (0.5%).</li>
+      <li data-i18n="oddsLi2">This is typically far better than major national lotteries.</li>
+      <li data-i18n="oddsLi3">No rollovers, no hidden “fine print” — the rules are public.</li>
+    </ul>
+
+    <p><strong data-i18n="summaryLabel">Final summary:</strong></p>
+    <p data-i18n="summaryBody">
+      This draw is fair because it follows Bitcoin’s rules: math, transparency, and resistance to manipulation.
+      You don’t need to trust anyone — you can verify everything.
     </p>
 
-    <p><b>“Can results be changed later?”</b><br>
-      No. The fingerprint hash permanently fixes the cycle inputs.
-    </p>
-
-    <p class="muted">This system is designed to be verifiable even if the website disappears.</p>
+    <div class="note" data-i18n="disclaimer">
+      Disclaimer: Bitcoin transactions may include miner fees and are subject to network conditions. BTC price volatility can affect the local-currency value. Ensure this activity is legal in your jurisdiction and consult a professional about tax obligations.
+    </div>
   </div>
 
 </div>
 
+<footer>
+  <span data-i18n="footerText">Decentralized audit • Total transparency • Bitcoin</span>
+</footer>
+
 <script>
-  // ===== MOCK DATA (replace with on-chain extraction logic) =====
-  const entries = [];
-  const winners = [];
+/** =========================
+ *  CONFIG
+ *  ========================= */
+const ADDRESS = 'bc1qmxcgv8wtj7zdx8t9xtr6xcfx5yuqeddqwx5wca';
+const EXACT_VALUE = 14000; // satoshis (0.00014000 BTC)
+const TARGET_ENTRIES = 200;
 
-  function updateUI() {
-    const count = entries.length;
-    document.getElementById('entriesCount').innerText = count;
-    document.getElementById('entriesRemaining').innerText = 200 - count;
+// You can tweak these to match your economics:
+const PRIZE_ENTRIES = 195;              // winner gets back 195 entries worth
+const PRIZE_SATS = PRIZE_ENTRIES * EXACT_VALUE;
 
-    if (count >= 200) {
-      document.getElementById('cycleStatus').innerText = 'Cycle locked – awaiting payout';
-      document.getElementById('seedBlock').innerText = 'BLOCKHASH_EXAMPLE';
-      document.getElementById('winnerIndex').innerText = 'sha256(seed) % 200 = 42';
-      document.getElementById('fingerprint').innerText = 'SHA256_FINGERPRINT_EXAMPLE';
-    }
+/** Helpers */
+function satsToBtcString(sats) {
+  const btc = sats / 100000000;
+  return btc.toFixed(8) + ' BTC';
+}
+
+/** =========================
+ *  i18n (translations)
+ *  - Use data-i18n keys on elements
+ *  - Default language = English
+ *  ========================= */
+const i18n = {
+  en: {
+    title: "Public Audit – Transparent Bitcoin Draw",
+    langLabel: "Language",
+    monitoredWalletLabel: "Monitored wallet:",
+    lastWinnersTitle: "Latest Winners (last 5 payouts)",
+    loadingExplorer: "Loading explorer data...",
+    currentRoundTitle: "Current Round",
+    exactEntriesLabel: "Exact-value entries received:",
+    missingLabel: "Missing",
+    missingSuffix: "entries to close the cycle.",
+    auditTip: "Tip: anyone can verify entries and payouts directly on the Bitcoin blockchain using a public explorer.",
+    guideTitle: "Final Audit Guide & Fairness Proof",
+    guideIntro: "This draw is designed to be mathematically fair, automatic, and verifiable by anyone — even without technical knowledge. Everything happens directly on the Bitcoin blockchain.",
+    simpleExplainTitle: "🧠 Simple explanation (for non-technical people)",
+    simpleExplainBody: "Think of this draw like a transparent box:",
+    simpleLi1: "Everyone sends exactly the same amount.",
+    simpleLi2: "All entries are recorded publicly on Bitcoin.",
+    simpleLi3: "No one can delete, change, or hide an entry.",
+    simpleLi4: "When the box is full (target entries), it is sealed automatically.",
+    sealedBody: "From that point on, not even the organizer can change the outcome. The winner is chosen by a mathematical calculation using public Bitcoin data.",
+    howToTitle: "🎯 How to participate (single rule)",
+    howToLi1: "Send exactly",
+    howToLi2: "To this address:",
+    howToLi3: "Wait at least 2 network confirmations.",
+    howToLi4: "Each valid payment = 1 equal chance.",
+    payoutTitle: "💰 Prize payout",
+    payoutBody1: "The winner receives",
+    payoutBody2: "which corresponds to",
+    payoutBody3: "entries.",
+    payoutBody4: "The local-currency value is informational only and depends on the BTC price at payout time.",
+    betterTitle: "🏆 Why this is better than traditional lotteries",
+    betterLi1: "Much higher odds: the participant count is capped (no millions of tickets).",
+    betterLi2: "Same price for everyone: every entry is identical (no “premium tickets”, no hidden tiers).",
+    betterLi3: "Full transparency: entries and payouts are public on-chain and can be audited by anyone.",
+    betterLi4: "No “trust me”: the winner is derived from Bitcoin data + SHA-256 — repeatable and verifiable.",
+    betterLi5: "Fast settlement: payouts can be sent as soon as the cycle closes (after confirmations).",
+    betterLi6: "Lower overhead: no physical infrastructure, no retail agents, no paper tickets.",
+    betterLi7: "No automatic “slices” from the pot like many lotteries (operator rules are explicit). Note: local taxes may still apply depending on your country.",
+    betterLi8: "Clear rules: exact amount required; wrong amounts do not count — no ambiguity.",
+    betterLi9: "Instant self-verification: you can verify your entry by checking the transaction on any explorer.",
+    techTitle: "🔢 Technical explanation (how the calculation works)",
+    techLi1: "All valid entries are ordered by block, transaction, and output.",
+    techLi2: "The seed_blockhash is the block hash of the last entry of the cycle.",
+    techLi3: "All txids in the cycle are concatenated together with that blockhash.",
+    techLi4: "We apply SHA-256 (the same core hash used by Bitcoin).",
+    techLi5: "The resulting number deterministically maps to the winner index.",
+    auditableTitle: "🔍 Why is it 100% auditable?",
+    auditLi1: "All entries are on the blockchain (public data).",
+    auditLi2: "The order of entries cannot be manipulated after confirmation.",
+    auditLi3: "The seed block cannot be manually chosen after the fact.",
+    auditLi4: "The same inputs always produce the same winner.",
+    auditLi5: "Anyone can rerun the calculation and get the same result.",
+    fairTitle: "⚖️ Why is this fair?",
+    fairLi1: "There is no admin choosing a winner.",
+    fairLi2: "There is no hidden algorithm.",
+    fairLi3: "There is no advantage to the organizer after entries are confirmed.",
+    fairLi4: "There is no way to change the result after the cycle is sealed.",
+    equalChance: "Here, every participant has exactly the same chance. One entry is one entry — no exceptions.",
+    oddsTitle: "📈 Real winning odds",
+    oddsBody1: "With",
+    oddsBody2: "participants:",
+    oddsLi1: "Winning odds: 1 in 200 (0.5%).",
+    oddsLi2: "This is typically far better than major national lotteries.",
+    oddsLi3: "No rollovers, no hidden “fine print” — the rules are public.",
+    summaryLabel: "Final summary:",
+    summaryBody: "This draw is fair because it follows Bitcoin’s rules: math, transparency, and resistance to manipulation. You don’t need to trust anyone — you can verify everything.",
+    disclaimer: "Disclaimer: Bitcoin transactions may include miner fees and are subject to network conditions. BTC price volatility can affect the local-currency value. Ensure this activity is legal in your jurisdiction and consult a professional about tax obligations.",
+    footerText: "Decentralized audit • Total transparency • Bitcoin"
+  },
+
+  es: {
+    title: "Auditoría Pública – Sorteo Transparente en Bitcoin",
+    langLabel: "Idioma",
+    monitoredWalletLabel: "Billetera monitoreada:",
+    lastWinnersTitle: "Últimos ganadores (últimos 5 pagos)",
+    loadingExplorer: "Cargando datos del explorador...",
+    currentRoundTitle: "Ronda actual",
+    exactEntriesLabel: "Entradas con valor exacto recibidas:",
+    missingLabel: "Faltan",
+    missingSuffix: "entradas para cerrar el ciclo.",
+    auditTip: "Consejo: cualquiera puede verificar entradas y pagos directamente en la blockchain de Bitcoin usando un explorador público.",
+    guideTitle: "Guía final de auditoría y prueba de justicia",
+    guideIntro: "Este sorteo está diseñado para ser matemáticamente justo, automático y verificable por cualquiera — incluso sin conocimientos técnicos. Todo ocurre directamente en la blockchain de Bitcoin.",
+    simpleExplainTitle: "🧠 Explicación simple (para no técnicos)",
+    simpleExplainBody: "Piensa en este sorteo como una caja transparente:",
+    simpleLi1: "Todos envían exactamente la misma cantidad.",
+    simpleLi2: "Todas las entradas quedan registradas públicamente en Bitcoin.",
+    simpleLi3: "Nadie puede borrar, cambiar u ocultar una entrada.",
+    simpleLi4: "Cuando la caja se llena (entradas objetivo), se sella automáticamente.",
+    sealedBody: "A partir de ese momento, ni siquiera el organizador puede cambiar el resultado. El ganador se elige mediante un cálculo matemático usando datos públicos de Bitcoin.",
+    howToTitle: "🎯 Cómo participar (una sola regla)",
+    howToLi1: "Envía exactamente",
+    howToLi2: "A esta dirección:",
+    howToLi3: "Espera al menos 2 confirmaciones de red.",
+    howToLi4: "Cada pago válido = 1 oportunidad igual.",
+    payoutTitle: "💰 Pago del premio",
+    payoutBody1: "El ganador recibe",
+    payoutBody2: "lo cual corresponde a",
+    payoutBody3: "entradas.",
+    payoutBody4: "El valor en moneda local es solo informativo y depende del precio del BTC al momento del pago.",
+    betterTitle: "🏆 Por qué esto es mejor que las loterías tradicionales",
+    betterLi1: "Probabilidades mucho mayores: el número de participantes está limitado (no millones de boletos).",
+    betterLi2: "Mismo precio para todos: cada entrada es idéntica (sin “boletos premium”, sin niveles ocultos).",
+    betterLi3: "Transparencia total: entradas y pagos son públicos en la cadena y cualquiera puede auditarlos.",
+    betterLi4: "Sin “confía en mí”: el ganador se deriva de datos de Bitcoin + SHA-256 — repetible y verificable.",
+    betterLi5: "Liquidación rápida: los pagos pueden enviarse en cuanto se cierre el ciclo (tras confirmaciones).",
+    betterLi6: "Menos costos: sin infraestructura física, sin agentes, sin boletos en papel.",
+    betterLi7: "Sin “cortes” automáticos del bote como en muchas loterías (las reglas del operador son explícitas). Nota: los impuestos locales pueden aplicar según tu país.",
+    betterLi8: "Reglas claras: se requiere monto exacto; montos incorrectos no cuentan — sin ambigüedad.",
+    betterLi9: "Verificación instantánea: puedes verificar tu entrada viendo la transacción en cualquier explorador.",
+    techTitle: "🔢 Explicación técnica (cómo funciona el cálculo)",
+    techLi1: "Todas las entradas válidas se ordenan por bloque, transacción y salida.",
+    techLi2: "El seed_blockhash es el hash del bloque de la última entrada del ciclo.",
+    techLi3: "Se concatenan todos los txids del ciclo junto con ese blockhash.",
+    techLi4: "Se aplica SHA-256 (el mismo hash central usado por Bitcoin).",
+    techLi5: "El número resultante asigna determinísticamente el índice del ganador.",
+    auditableTitle: "🔍 ¿Por qué es 100% auditable?",
+    auditLi1: "Todas las entradas están en la blockchain (datos públicos).",
+    auditLi2: "El orden de entradas no puede manipularse después de la confirmación.",
+    auditLi3: "El bloque semilla no puede elegirse manualmente a posteriori.",
+    auditLi4: "Los mismos datos siempre generan el mismo ganador.",
+    auditLi5: "Cualquiera puede repetir el cálculo y obtener el mismo resultado.",
+    fairTitle: "⚖️ ¿Por qué es justo?",
+    fairLi1: "No existe un admin eligiendo ganador.",
+    fairLi2: "No existe un algoritmo oculto.",
+    fairLi3: "No hay ventaja para el organizador tras confirmarse las entradas.",
+    fairLi4: "No hay forma de cambiar el resultado después de sellar el ciclo.",
+    equalChance: "Aquí, cada participante tiene exactamente la misma probabilidad. Una entrada es una entrada — sin excepciones.",
+    oddsTitle: "📈 Probabilidad real de ganar",
+    oddsBody1: "Con",
+    oddsBody2: "participantes:",
+    oddsLi1: "Probabilidad: 1 en 200 (0,5%).",
+    oddsLi2: "Suele ser mucho mejor que grandes loterías nacionales.",
+    oddsLi3: "Sin acumulados, sin “letra pequeña” — las reglas son públicas.",
+    summaryLabel: "Resumen final:",
+    summaryBody: "Este sorteo es justo porque sigue las reglas de Bitcoin: matemáticas, transparencia y resistencia a la manipulación. No necesitas confiar en nadie — puedes verificarlo todo.",
+    disclaimer: "Aviso: las transacciones de Bitcoin pueden incluir comisiones y dependen de la red. La volatilidad del BTC puede afectar el valor en moneda local. Asegúrate de que esto sea legal en tu jurisdicción y consulta sobre impuestos.",
+    footerText: "Auditoría descentralizada • Transparencia total • Bitcoin"
+  },
+
+  ru: {
+    title: "Публичный аудит – Прозрачный розыгрыш в Bitcoin",
+    langLabel: "Язык",
+    monitoredWalletLabel: "Отслеживаемый кошелёк:",
+    lastWinnersTitle: "Последние победители (последние 5 выплат)",
+    loadingExplorer: "Загрузка данных из обозревателя...",
+    currentRoundTitle: "Текущий раунд",
+    exactEntriesLabel: "Зачтённые точные взносы:",
+    missingLabel: "Осталось",
+    missingSuffix: "взносов до закрытия цикла.",
+    auditTip: "Совет: любой может проверить взносы и выплаты напрямую в блокчейне Bitcoin через публичный обозреватель.",
+    guideTitle: "Финальное руководство по аудиту и доказательство честности",
+    guideIntro: "Этот розыгрыш спроектирован так, чтобы быть математически честным, автоматическим и проверяемым кем угодно — даже без технических знаний. Всё происходит напрямую в блокчейне Bitcoin.",
+    simpleExplainTitle: "🧠 Простое объяснение (для нетехнических)",
+    simpleExplainBody: "Представьте, что это прозрачная коробка:",
+    simpleLi1: "Все отправляют строго одинаковую сумму.",
+    simpleLi2: "Все взносы публично записаны в Bitcoin.",
+    simpleLi3: "Нельзя удалить, изменить или скрыть взнос.",
+    simpleLi4: "Когда коробка заполнена (целевая величина), цикл автоматически «запечатывается».",
+    sealedBody: "После этого даже организатор не может изменить результат. Победитель определяется математическим расчётом на публичных данных Bitcoin.",
+    howToTitle: "🎯 Как участвовать (одно правило)",
+    howToLi1: "Отправьте ровно",
+    howToLi2: "На этот адрес:",
+    howToLi3: "Дождитесь минимум 2 подтверждений сети.",
+    howToLi4: "Каждый корректный платёж = 1 равный шанс.",
+    payoutTitle: "💰 Выплата приза",
+    payoutBody1: "Победитель получает",
+    payoutBody2: "что соответствует",
+    payoutBody3: "взносам.",
+    payoutBody4: "Значение в местной валюте носит справочный характер и зависит от курса BTC на момент выплаты.",
+    betterTitle: "🏆 Почему это лучше традиционных лотерей",
+    betterLi1: "Шансы выше: число участников ограничено (не миллионы билетов).",
+    betterLi2: "Одинаковая цена для всех: каждый взнос идентичен (без «премиум-билетов» и скрытых уровней).",
+    betterLi3: "Полная прозрачность: взносы и выплаты видны в блокчейне и проверяемы.",
+    betterLi4: "Без «поверьте на слово»: победитель вычисляется из данных Bitcoin + SHA-256 — повторяемо и проверяемо.",
+    betterLi5: "Быстрое завершение: выплата возможна сразу после закрытия цикла (после подтверждений).",
+    betterLi6: "Меньше накладных расходов: без физической инфраструктуры и бумажных билетов.",
+    betterLi7: "Нет автоматических «отчислений» из банка как во многих лотереях (правила оператора явно указаны). Примечание: налоги в вашей стране могут применяться.",
+    betterLi8: "Чёткие правила: требуется точная сумма; неверные суммы не засчитываются.",
+    betterLi9: "Мгновенная проверка: вы можете проверить свой взнос по транзакции в любом обозревателе.",
+    techTitle: "🔢 Техническое объяснение (как работает расчёт)",
+    techLi1: "Все корректные взносы упорядочиваются по блоку, транзакции и выходу.",
+    techLi2: "seed_blockhash — хеш блока последнего взноса цикла.",
+    techLi3: "Все txid цикла конкатенируются вместе с этим blockhash.",
+    techLi4: "Применяется SHA-256 (тот же хеш, что используется в Bitcoin).",
+    techLi5: "Полученное число детерминированно задаёт индекс победителя.",
+    auditableTitle: "🔍 Почему это 100% проверяемо?",
+    auditLi1: "Все взносы в блокчейне (публичные данные).",
+    auditLi2: "Порядок нельзя подменить после подтверждений.",
+    auditLi3: "Сид-блок нельзя выбрать вручную постфактум.",
+    auditLi4: "Одинаковые входные данные всегда дают одного победителя.",
+    auditLi5: "Любой может повторить расчёт и получить тот же результат.",
+    fairTitle: "⚖️ Почему это честно?",
+    fairLi1: "Нет администратора, выбирающего победителя.",
+    fairLi2: "Нет скрытого алгоритма.",
+    fairLi3: "Нет преимущества организатора после подтверждения взносов.",
+    fairLi4: "Нельзя изменить результат после «запечатывания» цикла.",
+    equalChance: "У каждого участника одинаковый шанс. Один взнос — один шанс, без исключений.",
+    oddsTitle: "📈 Реальные шансы на победу",
+    oddsBody1: "При",
+    oddsBody2: "участниках:",
+    oddsLi1: "Шанс: 1 из 200 (0,5%).",
+    oddsLi2: "Обычно это лучше, чем в крупных национальных лотереях.",
+    oddsLi3: "Без накоплений и скрытых условий — правила публичны.",
+    summaryLabel: "Итог:",
+    summaryBody: "Розыгрыш честный, потому что следует правилам Bitcoin: математика, прозрачность и устойчивость к манипуляциям. Не нужно доверять — можно проверять.",
+    disclaimer: "Отказ от ответственности: транзакции Bitcoin могут включать комиссии и зависят от сети. Волатильность BTC влияет на стоимость в местной валюте. Убедитесь в законности в вашей юрисдикции и уточните налоговые обязательства.",
+    footerText: "Децентрализованный аудит • Полная прозрачность • Bitcoin"
+  },
+
+  pt: {
+    title: "Auditoria Pública – Sorteio Transparente em Bitcoin",
+    langLabel: "Idioma",
+    monitoredWalletLabel: "Carteira monitorada:",
+    lastWinnersTitle: "Últimos ganhadores (últimos 5 payouts)",
+    loadingExplorer: "Carregando dados do explorador...",
+    currentRoundTitle: "Rodada atual",
+    exactEntriesLabel: "Entradas recebidas com valor exato:",
+    missingLabel: "Faltam",
+    missingSuffix: "entradas para fechar o ciclo.",
+    auditTip: "Dica: qualquer pessoa pode verificar entradas e payouts diretamente na blockchain do Bitcoin usando um explorador público.",
+    guideTitle: "Guia final de auditoria e prova de justiça",
+    guideIntro: "Este sorteio foi projetado para ser matematicamente justo, automático e verificável por qualquer pessoa — mesmo sem conhecimento técnico. Tudo acontece diretamente na blockchain do Bitcoin.",
+    simpleExplainTitle: "🧠 Explicação simples (para quem não entende de tecnologia)",
+    simpleExplainBody: "Pense neste sorteio como uma caixa transparente:",
+    simpleLi1: "Todos enviam exatamente o mesmo valor.",
+    simpleLi2: "Todas as entradas ficam registradas publicamente no Bitcoin.",
+    simpleLi3: "Ninguém pode apagar, alterar ou esconder uma entrada.",
+    simpleLi4: "Quando a caixa enche (entradas alvo), ela é lacrada automaticamente.",
+    sealedBody: "A partir desse momento, nem o organizador consegue mudar o resultado. O vencedor é escolhido por um cálculo matemático usando dados públicos do próprio Bitcoin.",
+    howToTitle: "🎯 Como participar (regra única)",
+    howToLi1: "Envie exatamente",
+    howToLi2: "Para o endereço:",
+    howToLi3: "Aguarde no mínimo 2 confirmações da rede.",
+    howToLi4: "Cada envio válido = 1 chance igual a todas as outras.",
+    payoutTitle: "💰 Retorno do prêmio",
+    payoutBody1: "O vencedor recebe",
+    payoutBody2: "o que corresponde a",
+    payoutBody3: "entradas.",
+    payoutBody4: "O valor em moeda local é apenas informativo e depende da cotação do BTC no momento do pagamento.",
+    betterTitle: "🏆 Por que isso é melhor do que loterias tradicionais",
+    betterLi1: "Chance muito maior: o número de participantes é limitado (não são milhões de bilhetes).",
+    betterLi2: "Mesmo preço para todos: cada entrada é idêntica (sem “bilhetes premium”, sem níveis ocultos).",
+    betterLi3: "Transparência total: entradas e payouts são públicos na blockchain e auditáveis por qualquer pessoa.",
+    betterLi4: "Sem “confia em mim”: o vencedor vem de dados do Bitcoin + SHA-256 — repetível e verificável.",
+    betterLi5: "Liquidação rápida: o payout pode ser enviado assim que o ciclo fecha (após confirmações).",
+    betterLi6: "Menos custos/overhead: sem infraestrutura física, sem agentes, sem bilhete de papel.",
+    betterLi7: "Sem “fatias automáticas” do prêmio como em muitas loterias (as regras do operador são explícitas). Nota: impostos locais ainda podem se aplicar conforme seu país.",
+    betterLi8: "Regras claras: valor exato obrigatório; valores errados não contam — sem pegadinha.",
+    betterLi9: "Verificação instantânea: você confere sua entrada vendo a transação em qualquer explorador.",
+    techTitle: "🔢 Explicação técnica (como o cálculo funciona)",
+    techLi1: "As entradas válidas são ordenadas por bloco, transação e saída.",
+    techLi2: "O seed_blockhash é o hash do bloco da última entrada do ciclo.",
+    techLi3: "Todos os txids do ciclo são concatenados junto com esse blockhash.",
+    techLi4: "É aplicado SHA-256 (o mesmo hash usado no Bitcoin).",
+    techLi5: "O número final define o índice do vencedor de forma determinística.",
+    auditableTitle: "🔍 Por que isso é 100% auditável?",
+    auditLi1: "Todas as entradas estão na blockchain (dados públicos).",
+    auditLi2: "A ordem não pode ser manipulada após confirmações.",
+    auditLi3: "O bloco-seed não pode ser escolhido manualmente depois do fato.",
+    auditLi4: "O mesmo cálculo sempre gera o mesmo vencedor.",
+    auditLi5: "Qualquer pessoa pode repetir o cálculo e chegar ao mesmo resultado.",
+    fairTitle: "⚖️ Por que isso é justo?",
+    fairLi1: "Não existe admin escolhendo vencedor.",
+    fairLi2: "Não existe algoritmo oculto.",
+    fairLi3: "Não existe vantagem para o organizador após as entradas confirmarem.",
+    fairLi4: "Não existe como alterar o resultado depois do ciclo lacrado.",
+    equalChance: "Aqui, cada participante tem exatamente a mesma chance. Uma entrada vale uma entrada — sem exceção.",
+    oddsTitle: "📈 Chance real de ganhar",
+    oddsBody1: "Com",
+    oddsBody2: "participantes:",
+    oddsLi1: "Chance de vitória: 1 em 200 (0,5%).",
+    oddsLi2: "Isso costuma ser melhor do que grandes loterias tradicionais.",
+    oddsLi3: "Sem acúmulo e sem letras miúdas — regras públicas.",
+    summaryLabel: "Resumo final:",
+    summaryBody: "Este sorteio é justo porque segue as regras do Bitcoin: matemática, transparência e resistência à manipulação. Você não precisa confiar em ninguém — apenas verificar.",
+    disclaimer: "Aviso: transações de Bitcoin podem incluir taxas de mineração e dependem da rede. A volatilidade do BTC pode afetar o valor em moeda local. Verifique se isso é legal na sua jurisdição e consulte obrigações fiscais.",
+    footerText: "Auditoria descentralizada • Transparência total • Bitcoin"
+  },
+
+  zh: {
+    title: "公开审计 – 透明的比特币抽奖",
+    langLabel: "语言",
+    monitoredWalletLabel: "监控地址：",
+    lastWinnersTitle: "最新获奖者（最近5次派奖）",
+    loadingExplorer: "正在从区块浏览器加载数据…",
+    currentRoundTitle: "当前轮次",
+    exactEntriesLabel: "已收到的精确金额参与次数：",
+    missingLabel: "还差",
+    missingSuffix: "次即可结束本轮。",
+    auditTip: "提示：任何人都可以通过公开区块浏览器在比特币链上核验参与记录与派奖。",
+    guideTitle: "最终审计指南与公平性证明",
+    guideIntro: "本抽奖旨在做到数学公平、自动化、且任何人都可验证——即使没有技术背景。所有过程都直接发生在比特币区块链上。",
+    simpleExplainTitle: "🧠 简单说明（非技术用户）",
+    simpleExplainBody: "把它想象成一个透明盒子：",
+    simpleLi1: "所有人发送完全相同的金额。",
+    simpleLi2: "所有参与记录都公开写入比特币区块链。",
+    simpleLi3: "任何人都无法删除、篡改或隐藏记录。",
+    simpleLi4: "当参与次数达到目标值时，系统自动“封箱”。",
+    sealedBody: "从那一刻起，连组织者也无法改变结果。中奖者由公开的比特币数据通过数学计算产生。",
+    howToTitle: "🎯 如何参与（唯一规则）",
+    howToLi1: "精确发送",
+    howToLi2: "到该地址：",
+    howToLi3: "至少等待2次网络确认。",
+    howToLi4: "每笔有效支付=1次公平机会。",
+    payoutTitle: "💰 奖金发放",
+    payoutBody1: "中奖者获得",
+    payoutBody2: "相当于",
+    payoutBody3: "次参与金额。",
+    payoutBody4: "本地货币价值仅供参考，取决于发奖时BTC价格。",
+    betterTitle: "🏆 为什么比传统彩票更好",
+    betterLi1: "中奖概率更高：参与人数上限固定（不是几百万张彩票）。",
+    betterLi2: "人人同价：每次参与金额一致（无“高级票”、无隐藏档位）。",
+    betterLi3: "完全透明：参与与派奖都在链上公开，可被任何人审计。",
+    betterLi4: "不靠“相信我”：结果由比特币数据+SHA-256推导，可重复验证。",
+    betterLi5: "结算更快：轮次结束后即可发放（确认后）。",
+    betterLi6: "更低成本：无实体销售网络、无纸质票据。",
+    betterLi7: "无传统彩票那种自动抽成（规则明确公开）。注意：你所在国家/地区可能仍需缴税。",
+    betterLi8: "规则清晰：必须精确金额，金额不符不计入——无歧义。",
+    betterLi9: "可即时自证：在任意区块浏览器查看交易即可确认参与。",
+    techTitle: "🔢 技术说明（计算方式）",
+    techLi1: "所有有效参与按区块、交易与输出排序。",
+    techLi2: "seed_blockhash 为本轮最后一笔参与所在区块的区块哈希。",
+    techLi3: "将本轮所有txid与该blockhash拼接。",
+    techLi4: "使用SHA-256（比特币核心哈希算法）。",
+    techLi5: "结果数字确定性映射到中奖索引。",
+    auditableTitle: "🔍 为什么100%可审计？",
+    auditLi1: "所有参与记录都在链上（公开数据）。",
+    auditLi2: "确认后顺序不可被操控。",
+    auditLi3: "种子区块无法事后手动挑选。",
+    auditLi4: "相同输入必得相同结果。",
+    auditLi5: "任何人都可复算并得到同一结果。",
+    fairTitle: "⚖️ 为什么公平？",
+    fairLi1: "没有管理员人为选人。",
+    fairLi2: "没有隐藏算法。",
+    fairLi3: "确认后组织者无优势。",
+    fairLi4: "封箱后无法改结果。",
+    equalChance: "每位参与者拥有完全相同的概率。一次参与就是一次机会——无例外。",
+    oddsTitle: "📈 实际中奖概率",
+    oddsBody1: "当有",
+    oddsBody2: "名参与者：",
+    oddsLi1: "中奖概率：200分之1（0.5%）。",
+    oddsLi2: "通常远优于大型国家彩票。",
+    oddsLi3: "无累积、无隐藏条款——规则公开。",
+    summaryLabel: "最终总结：",
+    summaryBody: "本抽奖之所以公平，是因为遵循比特币的规则：数学、透明、难以操纵。你无需信任任何人——只需核验。",
+    disclaimer: "免责声明：比特币交易可能包含矿工费并受网络影响；BTC价格波动会影响本地货币价值。请确认你所在地区的合法性并了解税务义务。",
+    footerText: "去中心化审计 • 完全透明 • Bitcoin"
+  },
+
+  ja: {
+    title: "公開監査 – 透明なビットコイン抽選",
+    langLabel: "言語",
+    monitoredWalletLabel: "監視アドレス：",
+    lastWinnersTitle: "直近の当選者（最新5回の支払い）",
+    loadingExplorer: "エクスプローラーからデータを読み込み中…",
+    currentRoundTitle: "現在のラウンド",
+    exactEntriesLabel: "正確な金額のエントリー数：",
+    missingLabel: "残り",
+    missingSuffix: "件でサイクル終了。",
+    auditTip: "ヒント：誰でも公開エクスプローラーで、BTCチェーン上のエントリーと支払いを確認できます。",
+    guideTitle: "最終監査ガイドと公平性の証明",
+    guideIntro: "この抽選は、数学的に公平・自動・誰でも検証可能（技術知識不要）に設計されています。すべてはビットコインのブロックチェーン上で行われます。",
+    simpleExplainTitle: "🧠 かんたんな説明（非技術者向け）",
+    simpleExplainBody: "透明な箱だと考えてください：",
+    simpleLi1: "全員が同じ金額を送ります。",
+    simpleLi2: "すべてのエントリーはBTC上に公開記録されます。",
+    simpleLi3: "削除・改ざん・隠蔽はできません。",
+    simpleLi4: "目標数に到達すると自動で「封印」されます。",
+    sealedBody: "その後は主催者でも結果を変えられません。公開BTCデータに基づく数学計算で当選者が決まります。",
+    howToTitle: "🎯 参加方法（ルールは1つ）",
+    howToLi1: "ちょうど",
+    howToLi2: "このアドレスへ：",
+    howToLi3: "ネットワーク承認を最低2回待ちます。",
+    howToLi4: "有効な送金1回＝平等な1口。",
+    payoutTitle: "💰 賞金支払い",
+    payoutBody1: "当選者は",
+    payoutBody2: "（",
+    payoutBody3: "口分）を受け取ります。",
+    payoutBody4: "法定通貨換算は参考値で、支払い時点のBTC価格に依存します。",
+    betterTitle: "🏆 従来の宝くじより優れている理由",
+    betterLi1: "当選確率が高い：参加人数が上限で固定（何百万枚ではない）。",
+    betterLi2: "全員同額：エントリーは完全に同一（プレミアム枠なし）。",
+    betterLi3: "完全透明：エントリーと支払いはオンチェーンで公開・監査可能。",
+    betterLi4: "「信じて」不要：BTCデータ+SHA-256で決定、再現可能で検証可能。",
+    betterLi5: "決済が速い：サイクル終了後すぐ（承認後）に送金可能。",
+    betterLi6: "運営コストが低い：紙券・販売網など不要。",
+    betterLi7: "多くの宝くじのような自動天引きがない（ルールは明示）。※ただし地域の税務は別途発生し得ます。",
+    betterLi8: "ルール明確：正確な金額のみ有効、違う金額は無効。",
+    betterLi9: "即時自己検証：エクスプローラーで自分の取引を確認できます。",
+    techTitle: "🔢 技術説明（計算の流れ）",
+    techLi1: "有効エントリーをブロック／取引／出力で並べます。",
+    techLi2: "seed_blockhashはサイクル最後のエントリーのブロックハッシュ。",
+    techLi3: "サイクル内のtxidとblockhashを連結します。",
+    techLi4: "SHA-256（ビットコインの主要ハッシュ）を適用。",
+    techLi5: "結果の数値で当選インデックスが決まります。",
+    auditableTitle: "🔍 なぜ100%監査可能？",
+    auditLi1: "すべてのエントリーが公開データ。",
+    auditLi2: "承認後の順序は操作できません。",
+    auditLi3: "シードブロックを事後に選べません。",
+    auditLi4: "同じ入力→同じ結果。",
+    auditLi5: "誰でも再計算できます。",
+    fairTitle: "⚖️ なぜ公平？",
+    fairLi1: "管理者が選びません。",
+    fairLi2: "隠しアルゴリズムなし。",
+    fairLi3: "承認後に主催者の有利はありません。",
+    fairLi4: "封印後に変更不可。",
+    equalChance: "全員が同じ確率です。1口は1口—例外なし。",
+    oddsTitle: "📈 実際の当選確率",
+    oddsBody1: "参加者が",
+    oddsBody2: "人の場合：",
+    oddsLi1: "当選確率：1/200（0.5%）。",
+    oddsLi2: "多くの宝くじより良いことが一般的です。",
+    oddsLi3: "繰越や隠し条件なし—ルールは公開。",
+    summaryLabel: "まとめ：",
+    summaryBody: "この抽選が公平なのは、ビットコインのルール（数学・透明性・改ざん耐性）に従うからです。信頼ではなく検証です。",
+    disclaimer: "免責：BTC送金には手数料がかかる場合があり、ネットワーク状況に依存します。価格変動で法定通貨価値が変わります。法令と税務をご確認ください。",
+    footerText: "分散型監査 • 完全透明 • Bitcoin"
+  },
+
+  ko: {
+    title: "공개 감사 – 투명한 비트코인 추첨",
+    langLabel: "언어",
+    monitoredWalletLabel: "모니터링 지갑:",
+    lastWinnersTitle: "최근 당첨자 (최근 5회 지급)",
+    loadingExplorer: "익스플로러 데이터 로딩 중...",
+    currentRoundTitle: "현재 라운드",
+    exactEntriesLabel: "정확한 금액으로 접수된 엔트리:",
+    missingLabel: "남은",
+    missingSuffix: "엔트리로 사이클 종료.",
+    auditTip: "팁: 누구나 공개 익스플로러로 비트코인 체인에서 엔트리/지급 내역을 검증할 수 있습니다.",
+    guideTitle: "최종 감사 가이드 및 공정성 증명",
+    guideIntro: "이 추첨은 수학적으로 공정하고 자동이며 누구나 검증 가능(비기술자 포함)하도록 설계되었습니다. 모든 과정은 비트코인 블록체인에서 진행됩니다.",
+    simpleExplainTitle: "🧠 쉬운 설명(비기술자용)",
+    simpleExplainBody: "투명한 상자라고 생각하세요:",
+    simpleLi1: "모두 동일한 금액을 보냅니다.",
+    simpleLi2: "모든 엔트리는 비트코인에 공개 기록됩니다.",
+    simpleLi3: "삭제/변조/은폐가 불가능합니다.",
+    simpleLi4: "목표 엔트리 수에 도달하면 자동으로 ‘봉인’됩니다.",
+    sealedBody: "그 이후에는 운영자도 결과를 바꿀 수 없습니다. 공개 비트코인 데이터로 수학 계산해 당첨자를 정합니다.",
+    howToTitle: "🎯 참여 방법(규칙 1개)",
+    howToLi1: "정확히",
+    howToLi2: "이 주소로:",
+    howToLi3: "최소 2회 컨펌을 기다리세요.",
+    howToLi4: "유효 결제 1건 = 동일한 1회 기회.",
+    payoutTitle: "💰 상금 지급",
+    payoutBody1: "당첨자는",
+    payoutBody2: "을(를) 받으며, 이는",
+    payoutBody3: "엔트리에 해당합니다.",
+    payoutBody4: "현지 통화 환산은 참고용이며 지급 시점 BTC 가격에 따라 달라집니다.",
+    betterTitle: "🏆 왜 전통 복권보다 더 좋은가",
+    betterLi1: "확률이 더 높음: 참가자 수가 제한됨(수백만 장 아님).",
+    betterLi2: "모두 동일 가격: 엔트리는 동일(‘프리미엄 티켓’/숨은 등급 없음).",
+    betterLi3: "완전 투명: 엔트리와 지급이 온체인 공개로 누구나 감사 가능.",
+    betterLi4: "‘믿어줘’ 없음: 비트코인 데이터+SHA-256으로 결정, 재현/검증 가능.",
+    betterLi5: "빠른 정산: 사이클 종료 후(컨펌 후) 즉시 지급 가능.",
+    betterLi6: "낮은 오버헤드: 종이 티켓/판매망 등 불필요.",
+    betterLi7: "많은 복권처럼 자동 ‘수수료/공제’가 없음(규칙 공개). 단, 지역 세금 의무는 별도일 수 있습니다.",
+    betterLi8: "명확한 규칙: 정확한 금액만 인정, 틀리면 미인정.",
+    betterLi9: "즉시 자기검증: 어떤 익스플로러에서도 내 트랜잭션으로 확인 가능.",
+    techTitle: "🔢 기술 설명(계산 방식)",
+    techLi1: "유효 엔트리를 블록/트랜잭션/출력 기준으로 정렬합니다.",
+    techLi2: "seed_blockhash는 사이클 마지막 엔트리 블록의 해시입니다.",
+    techLi3: "사이클의 txid들과 blockhash를 연결합니다.",
+    techLi4: "SHA-256(비트코인 핵심 해시)을 적용합니다.",
+    techLi5: "결과 숫자가 당첨 인덱스를 결정합니다.",
+    auditableTitle: "🔍 왜 100% 감사 가능?",
+    auditLi1: "모든 엔트리가 블록체인(공개 데이터)에 존재.",
+    auditLi2: "컨펌 이후 순서 조작 불가.",
+    auditLi3: "시드 블록을 사후에 고를 수 없음.",
+    auditLi4: "같은 입력이면 같은 결과.",
+    auditLi5: "누구나 재계산 가능.",
+    fairTitle: "⚖️ 왜 공정한가",
+    fairLi1: "관리자가 당첨자를 선택하지 않음.",
+    fairLi2: "숨은 알고리즘 없음.",
+    fairLi3: "컨펌 후 운영자 이점 없음.",
+    fairLi4: "봉인 후 결과 변경 불가.",
+    equalChance: "모두 같은 확률입니다. 1 엔트리는 1 엔트리 — 예외 없음.",
+    oddsTitle: "📈 실제 당첨 확률",
+    oddsBody1: "참가자가",
+    oddsBody2: "명일 때:",
+    oddsLi1: "확률: 1/200 (0.5%).",
+    oddsLi2: "대형 복권보다 더 나은 경우가 많습니다.",
+    oddsLi3: "이월/숨은 약관 없음 — 규칙 공개.",
+    summaryLabel: "최종 요약:",
+    summaryBody: "이 추첨은 비트코인의 규칙(수학/투명성/조작 저항)을 따르므로 공정합니다. 신뢰가 아니라 검증입니다.",
+    disclaimer: "면책: BTC 전송에는 수수료가 있을 수 있고 네트워크 상황에 따라 달라집니다. 가격 변동으로 현지 통화 가치가 달라질 수 있습니다. 법적/세무 의무를 확인하세요.",
+    footerText: "분산 감사 • 완전 투명 • Bitcoin"
+  },
+
+  it: {
+    title: "Audit Pubblico – Estrazione Trasparente in Bitcoin",
+    langLabel: "Lingua",
+    monitoredWalletLabel: "Wallet monitorato:",
+    lastWinnersTitle: "Ultimi vincitori (ultimi 5 pagamenti)",
+    loadingExplorer: "Caricamento dati dall'explorer...",
+    currentRoundTitle: "Round attuale",
+    exactEntriesLabel: "Entrate ricevute con importo esatto:",
+    missingLabel: "Mancano",
+    missingSuffix: "entrate per chiudere il ciclo.",
+    auditTip: "Suggerimento: chiunque può verificare entrate e pagamenti direttamente sulla blockchain di Bitcoin tramite un explorer pubblico.",
+    guideTitle: "Guida finale di audit e prova di correttezza",
+    guideIntro: "Questa estrazione è progettata per essere matematicamente corretta, automatica e verificabile da chiunque — anche senza conoscenze tecniche. Tutto avviene direttamente sulla blockchain di Bitcoin.",
+    simpleExplainTitle: "🧠 Spiegazione semplice (per non tecnici)",
+    simpleExplainBody: "Pensala come una scatola trasparente:",
+    simpleLi1: "Tutti inviano esattamente lo stesso importo.",
+    simpleLi2: "Tutte le entrate sono registrate pubblicamente su Bitcoin.",
+    simpleLi3: "Nessuno può cancellare, modificare o nascondere un'entrata.",
+    simpleLi4: "Quando la scatola è piena (entrate target), il ciclo si sigilla automaticamente.",
+    sealedBody: "Da quel momento, nemmeno l'organizzatore può cambiare l'esito. Il vincitore è scelto da un calcolo matematico usando dati pubblici di Bitcoin.",
+    howToTitle: "🎯 Come partecipare (un'unica regola)",
+    howToLi1: "Invia esattamente",
+    howToLi2: "A questo indirizzo:",
+    howToLi3: "Attendi almeno 2 conferme di rete.",
+    howToLi4: "Ogni pagamento valido = 1 possibilità uguale.",
+    payoutTitle: "💰 Pagamento del premio",
+    payoutBody1: "Il vincitore riceve",
+    payoutBody2: "che corrisponde a",
+    payoutBody3: "entrate.",
+    payoutBody4: "Il valore in valuta locale è solo informativo e dipende dal prezzo del BTC al momento del pagamento.",
+    betterTitle: "🏆 Perché è migliore delle lotterie tradizionali",
+    betterLi1: "Probabilità molto più alte: numero di partecipanti limitato (non milioni di biglietti).",
+    betterLi2: "Stesso prezzo per tutti: ogni entrata è identica (niente “biglietti premium”, niente livelli nascosti).",
+    betterLi3: "Trasparenza totale: entrate e pagamenti sono pubblici on-chain e auditabili da chiunque.",
+    betterLi4: "Niente “fidati”: il vincitore deriva da dati Bitcoin + SHA-256 — ripetibile e verificabile.",
+    betterLi5: "Regolamento rapido: pagamenti appena si chiude il ciclo (dopo conferme).",
+    betterLi6: "Meno overhead: niente infrastruttura fisica, niente agenti, niente biglietti cartacei.",
+    betterLi7: "Niente “trattenute automatiche” come in molte lotterie (regole esplicite). Nota: eventuali tasse locali possono comunque applicarsi.",
+    betterLi8: "Regole chiare: importo esatto obbligatorio; importi errati non contano.",
+    betterLi9: "Verifica immediata: puoi verificare la tua entrata su qualunque explorer.",
+    techTitle: "🔢 Spiegazione tecnica (come funziona il calcolo)",
+    techLi1: "Le entrate valide sono ordinate per blocco, transazione e output.",
+    techLi2: "Il seed_blockhash è l'hash del blocco dell'ultima entrata del ciclo.",
+    techLi3: "Tutti i txid del ciclo sono concatenati con quel blockhash.",
+    techLi4: "Si applica SHA-256 (lo stesso hash usato da Bitcoin).",
+    techLi5: "Il numero risultante mappa in modo deterministico l'indice del vincitore.",
+    auditableTitle: "🔍 Perché è 100% auditabile?",
+    auditLi1: "Tutte le entrate sono sulla blockchain (dati pubblici).",
+    auditLi2: "L'ordine non può essere manipolato dopo le conferme.",
+    auditLi3: "Il blocco seed non può essere scelto manualmente a posteriori.",
+    auditLi4: "Gli stessi input danno sempre lo stesso vincitore.",
+    auditLi5: "Chiunque può ripetere il calcolo e ottenere lo stesso risultato.",
+    fairTitle: "⚖️ Perché è equo?",
+    fairLi1: "Nessun admin sceglie il vincitore.",
+    fairLi2: "Nessun algoritmo nascosto.",
+    fairLi3: "Nessun vantaggio per l'organizzatore dopo le conferme.",
+    fairLi4: "Impossibile cambiare il risultato dopo il sigillo del ciclo.",
+    equalChance: "Qui ogni partecipante ha esattamente la stessa probabilità. Un'entrata è un'entrata — nessuna eccezione.",
+    oddsTitle: "📈 Probabilità reale di vincita",
+    oddsBody1: "Con",
+    oddsBody2: "partecipanti:",
+    oddsLi1: "Probabilità: 1 su 200 (0,5%).",
+    oddsLi2: "Spesso molto meglio delle grandi lotterie nazionali.",
+    oddsLi3: "Niente rollover, niente clausole nascoste — regole pubbliche.",
+    summaryLabel: "Sintesi finale:",
+    summaryBody: "Questa estrazione è equa perché segue le regole di Bitcoin: matematica, trasparenza e resistenza alla manipolazione. Non devi fidarti di nessuno — puoi verificare tutto.",
+    disclaimer: "Disclaimer: le transazioni Bitcoin possono includere commissioni e dipendono dalla rete. La volatilità del BTC può influire sul valore in valuta locale. Verifica la legalità nella tua giurisdizione e gli obblighi fiscali.",
+    footerText: "Audit decentralizzato • Trasparenza totale • Bitcoin"
+  },
+
+  fr: {
+    title: "Audit Public – Tirage Transparent en Bitcoin",
+    langLabel: "Langue",
+    monitoredWalletLabel: "Portefeuille surveillé :",
+    lastWinnersTitle: "Derniers gagnants (5 derniers paiements)",
+    loadingExplorer: "Chargement des données de l’explorateur…",
+    currentRoundTitle: "Tour en cours",
+    exactEntriesLabel: "Entrées reçues au montant exact :",
+    missingLabel: "Il manque",
+    missingSuffix: "entrées pour clôturer le cycle.",
+    auditTip: "Astuce : tout le monde peut vérifier les entrées et paiements directement sur la blockchain Bitcoin via un explorateur public.",
+    guideTitle: "Guide final d’audit et preuve d’équité",
+    guideIntro: "Ce tirage est conçu pour être mathématiquement équitable, automatique et vérifiable par tous — même sans connaissances techniques. Tout se passe directement sur la blockchain Bitcoin.",
+    simpleExplainTitle: "🧠 Explication simple (pour non-techniciens)",
+    simpleExplainBody: "Imaginez une boîte transparente :",
+    simpleLi1: "Tout le monde envoie exactement le même montant.",
+    simpleLi2: "Toutes les entrées sont enregistrées publiquement sur Bitcoin.",
+    simpleLi3: "Personne ne peut supprimer, modifier ou cacher une entrée.",
+    simpleLi4: "Quand la boîte est pleine (objectif d’entrées), le cycle est scellé automatiquement.",
+    sealedBody: "À partir de là, même l’organisateur ne peut plus changer le résultat. Le gagnant est déterminé par un calcul mathématique à partir de données publiques Bitcoin.",
+    howToTitle: "🎯 Comment participer (une seule règle)",
+    howToLi1: "Envoyez exactement",
+    howToLi2: "À cette adresse :",
+    howToLi3: "Attendez au moins 2 confirmations réseau.",
+    howToLi4: "Chaque paiement valide = 1 chance égale.",
+    payoutTitle: "💰 Paiement du prix",
+    payoutBody1: "Le gagnant reçoit",
+    payoutBody2: "ce qui correspond à",
+    payoutBody3: "entrées.",
+    payoutBody4: "La valeur en monnaie locale est indicative et dépend du prix du BTC au moment du paiement.",
+    betterTitle: "🏆 Pourquoi c’est mieux que les loteries traditionnelles",
+    betterLi1: "De bien meilleures chances : nombre de participants plafonné (pas des millions de tickets).",
+    betterLi2: "Même prix pour tous : chaque entrée est identique (pas de “tickets premium”).",
+    betterLi3: "Transparence totale : entrées et paiements sont publics on-chain et auditables.",
+    betterLi4: "Pas de “faites confiance” : résultat dérivé de données Bitcoin + SHA-256 — reproductible et vérifiable.",
+    betterLi5: "Règlement rapide : paiement dès la clôture du cycle (après confirmations).",
+    betterLi6: "Moins de frais : pas d’infrastructure physique ni de tickets papier.",
+    betterLi7: "Pas de “prélèvements automatiques” comme dans beaucoup de loteries (règles explicites). Note : des taxes locales peuvent néanmoins s’appliquer.",
+    betterLi8: "Règles claires : montant exact requis ; montants incorrects non comptés.",
+    betterLi9: "Auto-vérification instantanée : vérifiez votre entrée sur n’importe quel explorateur.",
+    techTitle: "🔢 Explication technique (comment le calcul fonctionne)",
+    techLi1: "Les entrées valides sont triées par bloc, transaction et sortie.",
+    techLi2: "Le seed_blockhash est le hash du bloc de la dernière entrée du cycle.",
+    techLi3: "Tous les txid du cycle sont concaténés avec ce blockhash.",
+    techLi4: "On applique SHA-256 (le même hash utilisé par Bitcoin).",
+    techLi5: "Le nombre résultant détermine l’indice du gagnant de façon déterministe.",
+    auditableTitle: "🔍 Pourquoi c’est 100% auditable ?",
+    auditLi1: "Toutes les entrées sont sur la blockchain (données publiques).",
+    auditLi2: "L’ordre ne peut pas être manipulé après confirmations.",
+    auditLi3: "Le bloc seed ne peut pas être choisi manuellement après coup.",
+    auditLi4: "Les mêmes entrées donnent toujours le même gagnant.",
+    auditLi5: "N’importe qui peut refaire le calcul et obtenir le même résultat.",
+    fairTitle: "⚖️ Pourquoi c’est équitable ?",
+    fairLi1: "Aucun admin ne choisit le gagnant.",
+    fairLi2: "Aucun algorithme caché.",
+    fairLi3: "Aucun avantage pour l’organisateur après confirmations.",
+    fairLi4: "Impossible de changer le résultat après scellement du cycle.",
+    equalChance: "Ici, chaque participant a exactement la même chance. Une entrée vaut une entrée — sans exception.",
+    oddsTitle: "📈 Chance réelle de gagner",
+    oddsBody1: "Avec",
+    oddsBody2: "participants :",
+    oddsLi1: "Chance : 1 sur 200 (0,5%).",
+    oddsLi2: "Souvent bien meilleur que les grandes loteries nationales.",
+    oddsLi3: "Pas de cagnotte cumulée, pas de petites lignes — règles publiques.",
+    summaryLabel: "Résumé final :",
+    summaryBody: "Ce tirage est équitable car il suit les règles de Bitcoin : mathématiques, transparence et résistance à la manipulation. Vous n’avez pas besoin de faire confiance — vous pouvez tout vérifier.",
+    disclaimer: "Avertissement : les transactions Bitcoin peuvent inclure des frais et dépendent du réseau. La volatilité du BTC peut affecter la valeur en monnaie locale. Vérifiez la légalité et vos obligations fiscales.",
+    footerText: "Audit décentralisé • Transparence totale • Bitcoin"
   }
+};
 
-  function exportCSV() {
-    let csv = 'blockheight,txid,vout\n';
-    entries.forEach(e => {
-      csv += `${e.blockheight},${e.txid},${e.vout}\n`;
+// Apply translations to elements with data-i18n attribute
+function applyI18n(lang) {
+  const dict = i18n[lang] || i18n.en;
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) el.textContent = dict[key];
+  });
+
+  // Update dynamic odds text to match TARGET_ENTRIES
+  // (Keeps translated sentence, but fixes the "1 in 200" line if you change TARGET_ENTRIES)
+  const oddsKey = "oddsLi1";
+  const oddsEl = document.querySelector('[data-i18n="oddsLi1"]');
+  if (oddsEl) {
+    const pct = (1 / TARGET_ENTRIES) * 100;
+    const pctStr = (Math.round(pct * 1000) / 1000).toString().replace(".", lang === "pt" || lang === "es" || lang === "fr" || lang === "it" ? "," : ".");
+    const templateByLang = {
+      en: `Winning odds: 1 in ${TARGET_ENTRIES} (${pctStr}%).`,
+      es: `Probabilidad: 1 en ${TARGET_ENTRIES} (${pctStr}%).`,
+      ru: `Шанс: 1 из ${TARGET_ENTRIES} (${pctStr}%).`,
+      pt: `Chance de vitória: 1 em ${TARGET_ENTRIES} (${pctStr}%).`,
+      zh: `中奖概率：${TARGET_ENTRIES}分之1（${pctStr}%）。`,
+      ja: `当選確率：1/${TARGET_ENTRIES}（${pctStr}%）。`,
+      ko: `확률: 1/${TARGET_ENTRIES} (${pctStr}%).`,
+      it: `Probabilità: 1 su ${TARGET_ENTRIES} (${pctStr}%).`,
+      fr: `Chance : 1 sur ${TARGET_ENTRIES} (${pctStr}%).`
+    };
+    oddsEl.textContent = templateByLang[lang] || templateByLang.en;
+  }
+}
+
+/** =========================
+ *  On-chain data loader
+ *  ========================= */
+async function loadData() {
+  const res = await fetch(`https://mempool.space/api/address/${ADDRESS}/txs`);
+  const txs = await res.json();
+
+  // Last payouts: any output that is NOT the monitored address and is greater than EXACT_VALUE
+  const payouts = [];
+  txs.forEach(tx => {
+    tx.vout.forEach(v => {
+      if (v.scriptpubkey_address && v.scriptpubkey_address !== ADDRESS && v.value > EXACT_VALUE) {
+        payouts.push(v.scriptpubkey_address);
+      }
     });
+  });
 
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'cycle_entries.csv';
-    a.click();
+  const winnerList = document.getElementById('winnerList');
+  winnerList.innerHTML = '';
+  if (payouts.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = '—';
+    winnerList.appendChild(li);
+  } else {
+    payouts.slice(0, 5).forEach(addr => {
+      const li = document.createElement('li');
+      li.textContent = addr;
+      winnerList.appendChild(li);
+    });
   }
 
-  updateUI();
+  // Count exact entries (value EXACT_VALUE paid to ADDRESS)
+  let entries = 0;
+  txs.forEach(tx => {
+    tx.vout.forEach(v => {
+      if (v.scriptpubkey_address === ADDRESS && v.value === EXACT_VALUE) {
+        entries++;
+      }
+    });
+  });
+
+  const cycleEntries = entries % TARGET_ENTRIES;
+
+  document.getElementById('entryCount').textContent = cycleEntries;
+  document.getElementById('missing').textContent = TARGET_ENTRIES - cycleEntries;
+  document.getElementById('progressBar').style.width = (cycleEntries / TARGET_ENTRIES * 100) + '%';
+}
+
+/** =========================
+ *  Init
+ *  ========================= */
+(function init() {
+  // Fill static/dynamic content
+  document.getElementById('addrHeader').textContent = ADDRESS;
+  document.getElementById('addrCode').textContent = ADDRESS;
+
+  document.getElementById('cycleTarget').textContent = TARGET_ENTRIES;
+  document.getElementById('targetEntriesStrong').textContent = TARGET_ENTRIES;
+
+  document.getElementById('exactBtc').textContent = satsToBtcString(EXACT_VALUE);
+  document.getElementById('prizeBtc').textContent = satsToBtcString(PRIZE_SATS);
+  document.getElementById('prizeEntries').textContent = PRIZE_ENTRIES;
+
+  // Default language = English
+  const langSelect = document.getElementById('langSelect');
+  langSelect.value = 'en';
+  applyI18n('en');
+
+  // Language change
+  langSelect.addEventListener('change', (e) => {
+    applyI18n(e.target.value);
+  });
+
+  // Load on-chain data
+  loadData();
+})();
 </script>
 
 </body>
